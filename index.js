@@ -92,7 +92,11 @@ function getOptions(args) {
     return;
   }
 
-  const arg0 = args[0];
+  let arg0 = args[0];
+  if (Array.isArray(arg0)) {
+    args = arg0;
+    arg0 = args[0];
+  }
   const options = {};
   if (typeof arg0 === 'object' && arg0 !== null) {
     Object.assign(options, arg0);
