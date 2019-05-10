@@ -1,7 +1,7 @@
 {
   "name": "lack",
   "version": "0.0.2",
-  "description": "whistle plugin scaffold",
+  "description": "whistle extension tools",
   "author": "avenwu <avwu@qq.com>",
   "license": "MIT",
   "bin": {
