@@ -20,3 +20,9 @@ npm i -g lack
     ``` sh
     lack watch
     ```
+
+# TODOs
+1. [ ] 优化脚手架tips
+2. [ ] 完善脚手架功能
+3. [ ] 支持通过注入的方式给Node服务统一设置HTTP[s]、Socket请求代理
+4. [ ] 完善文档
