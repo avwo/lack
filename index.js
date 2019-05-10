@@ -34,7 +34,7 @@ const getConnectData = (options, proxy) => {
   }
   const result = [`CONNECT ${host}:${port} HTTP/1.1`];
   const headers = Object.keys({}, proxy.headers);
-  headers['x-whistle-policy'] = options.pathname ? 'intercept' : 'tunnel';
+  headers['x-whistle-policy'] = (options.pathname || options.href) ? 'intercept' : 'tunnel';
   Object.keys(headers).forEach((name) => {
     const value = headers[name];
     if (value == null) {
@@ -126,4 +126,8 @@ prototype.connect = function(...args) {
 
 exports.setProxy = (proxy) => {
   globalProxy = formatProxy(proxy);
+};
+
+exports.removeProxy = () => {
+  globalProxy = null;
 };
