@@ -23,6 +23,11 @@ const formatProxy = (proxy) => {
   return { host, port, headers };
 };
 
+const isHttp = (options) => {
+  return options.pathname || options.href || options._agentKey
+    || options.protocol || options.headers;
+};
+
 const getProxy = (options) => {
   if (!options || !globalProxy || typeof globalProxy !== 'function') {
     return globalProxy;
@@ -37,7 +42,7 @@ const getConnectData = (options, proxy) => {
   }
   const result = [`CONNECT ${host}:${port} HTTP/1.1`];
   const headers = Object.keys({}, proxy.headers);
-  headers['x-whistle-policy'] = (options.pathname || options.href) ? 'intercept' : 'tunnel';
+  headers['x-whistle-policy'] = isHttp(options) ? 'intercept' : 'tunnel';
   Object.keys(headers).forEach((name) => {
     const value = headers[name];
     if (value == null) {
@@ -154,7 +159,7 @@ tls.connect = function(...args) {
   if (!proxy) {
     return connect.apply(this, args);
   }
-  if (options.pathname || options.href) {
+  if (isHttp(options)) {
     options.rejectUnauthorized = false;
   }
   const socket = new Socket();
