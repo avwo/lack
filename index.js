@@ -3,7 +3,8 @@ const assert = require('assert');
 
 const { connect } = prototype;
 const HOST_RE = /^\s*[\w.-]+\s*$/;
-const STATUS_RE = /^\s*HTTP\/1.1\s+\d+/i;
+const STATUS_RE = /^\s*HTTP\/1.1\s+(\d+)/i;
+const noop = () => {};
 let globalProxy;
 
 const checkHost = host => HOST_RE.test(host);
@@ -26,16 +27,12 @@ const getProxy = (options) => {
   return formatProxy(globalProxy(options));
 };
 
-const connectProxy = (socket, options) => {
-  const proxy = getProxy(options);
-  if (!proxy) {
-    return;
-  }
+const getConnectData = (options, proxy) => {
   const { host, port } = options;
-  if (!checkHost(host) || !checkPort(port)) {
+  if (!proxy || !checkHost(host) || !checkPort(port)) {
     return;
   }
-  const msg = [`CONNECT ${host}:${port} HTTP/1.1`];
+  const result = [`CONNECT ${host}:${port} HTTP/1.1`];
   const headers = Object.keys({}, proxy.headers);
   headers['x-whistle-policy'] = 'intercept';
   Object.keys(headers).forEach((name) => {
@@ -44,13 +41,43 @@ const connectProxy = (socket, options) => {
       return;
     }
     if (Array.isArray(value)) {
-      value.forEach(val => msg.push(`${name}: ${val}`));
+      value.forEach(val => result.push(`${name}: ${val}`));
     } else {
-      msg.push(`${name}: ${value}`);
+      result.push(`${name}: ${value}`);
     }
   });
-  msg.push('\r\n');
-  socket.write(msg.join('\r\n'));
+  result.push('\r\n');
+  return result.join('\r\n');
+};
+
+const toNumber = (x) => {
+  x = Number(x);
+  return x >= 0 ? x : false;
+};
+
+
+const isPipeName = s => (typeof s === 'string' && toNumber(s) === false);
+
+function getOptions(args) {
+  if (args.length === 0) {
+    return;
+  }
+  const arg0 = args[0];
+  const options = {};
+  if (typeof arg0 === 'object' && arg0 !== null) {
+    Object.assign(options, arg0);
+  } else if (isPipeName(arg0)) {
+    options.path = arg0;
+  } else {
+    options.port = arg0;
+    if (args.length > 1 && typeof args[1] === 'string') {
+      options.host = args[1];
+    }
+  }
+  return options;
+}
+
+const handleConnect = (socket, cb) => {
   const { write } = socket;
   let buffer = [];
   let connected;
@@ -76,45 +103,25 @@ const connectProxy = (socket, options) => {
       buffer.forEach(args => socket.write(...args));
     }
     buffer = null;
+    setTimeout(cb, 10);
   };
   socket.on('data', handleData);
 };
 
-const toNumber = (x) => {
-  x = Number(x);
-  return x >= 0 ? x : false;
-};
-
-const isPipeName = s => (typeof s === 'string' && toNumber(s) === false);
-
-function getOptions(args) {
-  if (args.length === 0) {
-    return;
-  }
-
-  let arg0 = args[0];
-  if (Array.isArray(arg0)) {
-    args = arg0;
-    arg0 = args[0];
-  }
-  const options = {};
-  if (typeof arg0 === 'object' && arg0 !== null) {
-    Object.assign(options, arg0);
-  } else if (isPipeName(arg0)) {
-    options.path = arg0;
-  } else {
-    options.port = arg0;
-    if (args.length > 1 && typeof args[1] === 'string') {
-      options.host = args[1];
-    }
-  }
-
-  return options;
-}
-
 prototype.connect = function(...args) {
-  connectProxy(this, getOptions(args));
-  return connect.apply(this, args);
+  args = Array.isArray(args[0]) ? args[0] : args;
+  const options = getOptions(args);
+  const cb = typeof args[1] === 'function' ? args[1] : noop;
+  const proxy = getProxy(options);
+  const connData = getConnectData(options, proxy);
+  const socket = this;
+  return connect.call(this, connData ? proxy : options, () => {
+    if (!connData) {
+      return cb();
+    }
+    socket.write(connData);
+    handleConnect(socket, cb);
+  });
 };
 
 exports.setProxy = (proxy) => {
