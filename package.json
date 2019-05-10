@@ -1,0 +1,41 @@
+{
+  "name": "lack",
+  "version": "0.0.2",
+  "description": "whistle plugin scaffold",
+  "author": "avenwu <avwu@qq.com>",
+  "license": "MIT",
+  "bin": {
+    "lack": "./bin/index.js"
+  },
+  "scripts": {
+    "lint": "eslint *.js bin",
+    "lintfix": "eslint --fix *.js bin",
+    "init": "node bin init",
+    "watch": "node bin watch"
+  },
+  "homepage": "https://github.com/avwo/lack",
+  "keywords": [
+    "whistle",
+    "plugin",
+    "scaffold"
+  ],
+  "registry": "https://github.com/avwo/lack",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/avwo/lack.git"
+  },
+  "engines": {
+    "node": ">= 8"
+  },
+  "dependencies": {
+    "chokidar": "^2.0.4",
+    "commander": "^2.20.0",
+    "fs-extra": "^7.0.1",
+    "inquirer": "^6.3.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-config-imweb": "^0.2.17"
+  }
+}
