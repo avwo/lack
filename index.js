@@ -1,7 +1,10 @@
-const { prototype } = require('net').Socket;
+const { Socket } = require('net');
+const tls = require('tls');
 const assert = require('assert');
 
+const { prototype } = Socket;
 const { connect } = prototype;
+const tlsConnect = tls.connect;
 const HOST_RE = /^\s*[\w.-]+\s*$/;
 const STATUS_RE = /^\s*HTTP\/1.1\s+(\d+)/i;
 const noop = () => {};
@@ -58,14 +61,17 @@ const toNumber = (x) => {
 
 const isPipeName = s => (typeof s === 'string' && toNumber(s) === false);
 
-function getOptions(args) {
+function normalizeArgs(args) {
+  if (Array.isArray(args[0])) {
+    return args[0];
+  }
   if (args.length === 0) {
-    return;
+    return [{}, null];
   }
   const arg0 = args[0];
-  const options = {};
+  let options = {};
   if (typeof arg0 === 'object' && arg0 !== null) {
-    Object.assign(options, arg0);
+    options = arg0;
   } else if (isPipeName(arg0)) {
     options.path = arg0;
   } else {
@@ -74,7 +80,8 @@ function getOptions(args) {
       options.host = args[1];
     }
   }
-  return options;
+  const cb = args[args.length - 1];
+  return [options, typeof cb === 'function' ? cb : null];
 }
 
 const handleConnect = (socket, cb) => {
@@ -109,10 +116,13 @@ const handleConnect = (socket, cb) => {
 };
 
 prototype.connect = function(...args) {
-  args = Array.isArray(args[0]) ? args[0] : args;
-  const options = getOptions(args);
-  const cb = typeof args[1] === 'function' ? args[1] : noop;
+  args = normalizeArgs(args);
+  const options = args[0];
   const proxy = getProxy(options);
+  if (!proxy) {
+    return connect.apply(this, args);
+  }
+  const cb = typeof args[1] === 'function' ? args[1] : noop;
   const connData = getConnectData(options, proxy);
   const socket = this;
   return connect.call(this, connData ? proxy : options, () => {
@@ -122,6 +132,37 @@ prototype.connect = function(...args) {
     socket.write(connData);
     handleConnect(socket, cb);
   });
+};
+
+function normalizeConnectArgs(listArgs) {
+  const args = normalizeArgs(listArgs);
+  const options = args[0];
+  const cb = args[1];
+  if (listArgs[1] !== null && typeof listArgs[1] === 'object') {
+    Object.assign(options, listArgs[1]);
+  } else if (listArgs[2] !== null && typeof listArgs[2] === 'object') {
+    Object.assign(options, listArgs[2]);
+  }
+
+  return cb ? [options, cb] : [options];
+}
+
+tls.connect = function(...args) {
+  args = normalizeConnectArgs(args);
+  const options = args[0];
+  const proxy = getProxy(options);
+  if (!proxy) {
+    return connect.apply(this, args);
+  }
+  if (options.pathname || options.href) {
+    options.rejectUnauthorized = false;
+  }
+  const socket = new Socket();
+  options.socket = socket;
+  const tlsSocket = tlsConnect(options, args[1]);
+  socket.connect(options);
+  socket.on('error', err => tlsSocket.emit('error', err));
+  return tlsSocket;
 };
 
 exports.setProxy = (proxy) => {
