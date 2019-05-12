@@ -3,13 +3,14 @@
   "version": "0.0.2",
   "description": "whistle extension tools",
   "author": "avenwu <avwu@qq.com>",
+  "main": "./lib",
   "license": "MIT",
   "bin": {
     "lack": "./bin/index.js"
   },
   "scripts": {
-    "lint": "eslint *.js bin",
-    "lintfix": "eslint --fix *.js bin",
+    "lint": "eslint *.js bin lib",
+    "lintfix": "eslint --fix *.js bin lib",
     "init": "node bin init",
     "watch": "node bin watch"
   },
@@ -31,7 +32,9 @@
     "chokidar": "^2.0.4",
     "commander": "^2.20.0",
     "fs-extra": "^7.0.1",
-    "inquirer": "^6.3.1"
+    "hagent": "^0.6.1",
+    "inquirer": "^6.3.1",
+    "lru-cache": "^5.1.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
