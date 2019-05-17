@@ -40,4 +40,4 @@ jspm_packages
 .idea
 /.*
 /src
-/whistle.test
+/test
