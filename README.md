@@ -59,3 +59,5 @@ const lack = require('lack');
         };
     });
     ```
+
+有关例子可以参见[测试用例](./test)。
