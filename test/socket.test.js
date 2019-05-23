@@ -10,7 +10,7 @@ setProxy((options) => {
   return Object.assign(options, PROXY_OPTIONS);
 });
 
-// 设置固定代理 
+// 设置固定代理
 // setProxy(PROXY_OPTIONS);
 
 (async () => {
@@ -18,7 +18,6 @@ setProxy((options) => {
     host: 'ke.qq.com',
     port: 80,
   });
-  console.log('********************')
   socket.write([
     'GET / HTTP/1.1',
     'Host: ke.qq.com',

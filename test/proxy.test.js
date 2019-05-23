@@ -12,7 +12,7 @@ const PROXY_OPTIONS = {
 //   return Object.assign(options, PROXY_OPTIONS);
 // });
 
-// 设置固定代理 
+// 设置固定代理
 setProxy(PROXY_OPTIONS);
 
 const httpClient = http.request('http://ke.qq.com', (res) => {
