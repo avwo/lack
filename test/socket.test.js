@@ -18,11 +18,13 @@ setProxy((options) => {
     host: 'ke.qq.com',
     port: 80,
   });
+  console.log('********************')
   socket.write([
     'GET / HTTP/1.1',
     'Host: ke.qq.com',
     '\r\n',
   ].join('\r\n'));
+  socket.on('error', console.error); // eslint-disable-line
   socket.on('data', (data) => {
     console.log(`${data}`); // eslint-disable-line
   });

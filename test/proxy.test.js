@@ -18,11 +18,11 @@ setProxy(PROXY_OPTIONS);
 const httpClient = http.request('http://ke.qq.com', (res) => {
   console.log(res.statusCode); // eslint-disable-line
 });
-httpClient.on('error', () => {});
+httpClient.on('error', console.error); // eslint-disable-line
 httpClient.end();
 
 const httpsClient = https.request('https://ke.qq.com', (res) => {
   console.log(res.statusCode); // eslint-disable-line
 });
-httpsClient.on('error', () => {});
+httpsClient.on('error', console.error); // eslint-disable-line
 httpsClient.end();
