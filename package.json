@@ -9,8 +9,8 @@
     "lack": "./bin/index.js"
   },
   "scripts": {
-    "lint": "eslint bin lib",
-    "lintfix": "eslint --fix bin lib",
+    "lint": "eslint bin lib test",
+    "lintfix": "eslint --fix bin lib test",
     "init": "node bin init",
     "watch": "node bin watch"
   },
