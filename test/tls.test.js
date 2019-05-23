@@ -2,7 +2,7 @@ const { setProxy, createTlsConnection } = require('../lib');
 
 const PROXY_OPTIONS = {
   host: '127.0.0.1',
-  port: 8888,
+  port: 8899,
 };
 
 // 动态设置代理
