@@ -1,4 +1,10 @@
 # lack
+[![NPM version](https://img.shields.io/npm/v/lack.svg?style=flat-square)](https://npmjs.org/package/lack)
+[![node version](https://img.shields.io/badge/node.js-%3E=_0.10-green.svg?style=flat-square)](http://nodejs.org/download/)
+[![npm download](https://img.shields.io/npm/dm/lack.svg?style=flat-square)](https://npmjs.org/package/lack)
+[![NPM count](https://img.shields.io/npm/dt/lack.svg?style=flat-square)](https://www.npmjs.com/package/lack)
+[![License](https://img.shields.io/npm/l/lack.svg?style=flat-square)](https://www.npmjs.com/package/lack)
+
 lack 为 [whistle](https://github.com/avwo/whistle) 的辅助模块，用来方便使用 whistle 或协助扩展 whistle 功能，如生成 whistle 插件的脚手架，给 Node 程序注入 HTTP 代理等。
 
 ### 安装
