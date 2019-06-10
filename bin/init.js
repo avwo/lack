@@ -139,6 +139,14 @@ const readIndexFile = () => {
   return '';
 };
 
+let done;
+const ensureLibExist = () => {
+  if (!done) {
+    done = true;
+    fse.ensureDirSync('lib');
+  }
+};
+
 module.exports = async () => {
   const pkg = getPackage();
   let defaultName;
@@ -189,11 +197,12 @@ module.exports = async () => {
   if (!ok) {
     return;
   }
-  fse.ensureDirSync('lib');
+
   const exportsList = [];
   if (uiServer) {
     exportsList.push('exports.uiServer = require(\'./lib/uiServer\');');
     if (!fs.existsSync('lib/uiServer')) {
+      ensureLibExist();
       fse.copySync(uiServer, 'lib/uiServer');
       pkg.dependencies = pkg.dependencies || {};
       Object.assign(pkg.dependencies, UI_DEPS);
@@ -211,6 +220,7 @@ module.exports = async () => {
     const destFile = `lib/${server}.js`;
     const srcFile = servers[server];
     if (!fs.existsSync(destFile)) {
+      ensureLibExist();
       fse.copySync(srcFile, destFile);
     }
   });
