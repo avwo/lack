@@ -221,6 +221,8 @@ module.exports = async () => {
     }
   });
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
-  fs.writeFileSync('index.js', indexFile);
+  if (indexFile) {
+    fs.writeFileSync('index.js', indexFile);
+  }
   console.log('\n\nFor help see https://github.com/avwo/lack\n\n'); // eslint-disable-line
 };
