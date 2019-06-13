@@ -16,7 +16,7 @@ module.exports = (dirs) => {
   chokidar.watch(watchList, {
     ignored: /(^|[/\\])(\..|node_modules([/\\]|$))/,
   }).on('raw', (_, filename) => {
-    if (filename === 'package.json') {
+    if (filename.includes('package.json')) {
       return;
     }
     clearTimeout(timer);
