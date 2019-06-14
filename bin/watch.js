@@ -1,6 +1,13 @@
 const chokidar = require('chokidar');
 const fs = require('fs');
 
+const touch = () => {
+  try {
+    const now = new Date();
+    fs.utimesSync('package.json', now, now); // eslint-disable-line
+  } catch (e) {}
+};
+
 module.exports = (dirs) => {
   const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib'];
   if (dirs && typeof dirs === 'string') {
@@ -21,11 +28,9 @@ module.exports = (dirs) => {
     }
     clearTimeout(timer);
     timer = setTimeout(() => {
-      try {
-        console.log(`${filename} is changed.`); // eslint-disable-line
-        const now = new Date();
-        fs.utimesSync('package.json', now, now); // eslint-disable-line
-      } catch (e) {}
+      console.log(`${filename} is changed.`); // eslint-disable-line
+      touch();
     }, 1000);
   }).on('error', () => {});
+  touch();
 };
