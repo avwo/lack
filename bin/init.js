@@ -206,6 +206,10 @@ module.exports = async () => {
       fse.copySync(uiServer, 'lib/uiServer');
       pkg.dependencies = pkg.dependencies || {};
       Object.assign(pkg.dependencies, UI_DEPS);
+      if (!fs.existsSync('public/index.html')) {
+        fse.ensureDirSync('public');
+        fse.copySync(path.join(ASSETS_DIR, 'public/index.html'), 'public/index.html');
+      }
     }
   }
   Object.keys(rulesFiles).forEach((file) => {

@@ -16,6 +16,6 @@ module.exports = (server/* , options */) => {
   app.use(bodyParser());
   app.use(router.routes());
   app.use(router.allowedMethods());
-  app.use(serve(path.join(__dirname, 'public'), { maxage: MAX_AGE }));
+  app.use(serve(path.join(__dirname, '../../public'), { maxage: MAX_AGE }));
   server.on('request', app.callback());
 };
