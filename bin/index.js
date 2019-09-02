@@ -26,5 +26,5 @@ program
 program.parse(process.argv);
 
 if (!bingo) {
-  console.log(`Type '${conf.name} help' for usage.`);  // eslint-disable-line
+  console.log(`Type '${conf.name} --help' for usage.`);  // eslint-disable-line
 }

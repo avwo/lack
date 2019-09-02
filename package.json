@@ -1,6 +1,6 @@
 {
   "name": "lack",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "whistle extension tools",
   "author": "avenwu <avwu@qq.com>",
   "main": "./lib",
