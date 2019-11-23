@@ -11,6 +11,7 @@ const MAX_AGE = 1000 * 60 * 5;
 module.exports = (server/* , options */) => {
   const app = new Koa();
   app.proxy = true;
+  app.silent = true;
   onerror(app);
   setupRouter(router);
   app.use(bodyParser());
