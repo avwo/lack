@@ -1,6 +1,6 @@
 
 module.exports = (server/* , options */) => {
-  server.on('request', (req, socket) => {
+  server.on('connect', (req, socket) => {
     socket.pipe(socket);
   });
 };
