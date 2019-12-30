@@ -207,7 +207,6 @@ module.exports = async () => {
   }
 
   addConfigFile('.editorconfig');
-  addConfigFile('.eslintrc');
   addConfigFile('.gitignore');
   addConfigFile('.npmignore');
 
