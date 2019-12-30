@@ -4,7 +4,6 @@ const fse = require('fs-extra');
 const path = require('path');
 /* eslint-disable no-sync */
 const ASSETS_DIR = path.join(__dirname, '../assets');
-const CONF_PATH = path.join(__dirname, '../');
 const NAME_RE = /^(@[a-z\d_-]+\/)?(whistle\.)?([a-z\d_-]+)$/;
 const NAME_TIPS = 'The plugin name can only contain a~z, 0~9, _ and -.';
 const RULES_SERVERS = [
@@ -48,7 +47,7 @@ const getPackage = () => {
 
 const addConfigFile = (name) => {
   if (!fs.existsSync(name)) {
-    fse.copySync(path.join(CONF_PATH, name), name);
+    fse.copySync(path.join(ASSETS_DIR, name), name);
   }
 };
 
