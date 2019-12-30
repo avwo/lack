@@ -4,6 +4,7 @@ const fse = require('fs-extra');
 const path = require('path');
 /* eslint-disable no-sync */
 const ASSETS_DIR = path.join(__dirname, '../assets');
+const CONF_PATH = path.join(__dirname, '../');
 const NAME_RE = /^(@[a-z\d_-]+\/)?(whistle\.)?([a-z\d_-]+)$/;
 const NAME_TIPS = 'The plugin name can only contain a~z, 0~9, _ and -.';
 const RULES_SERVERS = [
@@ -43,6 +44,12 @@ const getPackage = () => {
     pkg = fse.readJSONSync('package.json');
   } catch (e) {}
   return Object.assign({}, pkg);
+};
+
+const addConfigFile = (name) => {
+  if (!fs.existsSync(name)) {
+    fse.copySync(path.join(CONF_PATH, name), name);
+  }
 };
 
 const selectUIServer = async () => {
@@ -173,6 +180,12 @@ module.exports = async () => {
   pkg.name = `${RegExp.$1 || ''}${RegExp.$2 || 'whistle.'}${RegExp.$3}`;
   pkg.version = pkg.version || '1.0.0';
   pkg.description = pkg.description || '';
+
+  addConfigFile('.editorconfig');
+  addConfigFile('.eslintrc');
+  addConfigFile('.gitignore');
+  addConfigFile('.npmignore');
+
   const uiServer = await selectUIServer();
   const rulesServers = await selectRulesServers();
   const statsServers = await selectStatsServers();
