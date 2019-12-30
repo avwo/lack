@@ -47,7 +47,7 @@ const getPackage = () => {
 
 const addConfigFile = (name) => {
   if (!fs.existsSync(name)) {
-    fse.copySync(path.join(ASSETS_DIR, name), name);
+    fse.copySync(path.join(ASSETS_DIR, name), `.${name}`);
   }
 };
 
@@ -205,9 +205,9 @@ module.exports = async () => {
     return;
   }
 
-  addConfigFile('.editorconfig');
-  addConfigFile('.gitignore');
-  addConfigFile('.npmignore');
+  addConfigFile('editorconfig');
+  addConfigFile('gitignore');
+  addConfigFile('npmignore');
 
   if (!fs.existsSync('README.md')) {
     const simpleName = pkg.name.substring(pkg.name.indexOf('/') + 1);
