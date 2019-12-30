@@ -181,11 +181,6 @@ module.exports = async () => {
   pkg.version = pkg.version || '1.0.0';
   pkg.description = pkg.description || '';
 
-  addConfigFile('.editorconfig');
-  addConfigFile('.eslintrc');
-  addConfigFile('.gitignore');
-  addConfigFile('.npmignore');
-
   const uiServer = await selectUIServer();
   const rulesServers = await selectRulesServers();
   const statsServers = await selectStatsServers();
@@ -210,6 +205,11 @@ module.exports = async () => {
   if (!ok) {
     return;
   }
+
+  addConfigFile('.editorconfig');
+  addConfigFile('.eslintrc');
+  addConfigFile('.gitignore');
+  addConfigFile('.npmignore');
 
   const exportsList = [];
   if (uiServer) {
