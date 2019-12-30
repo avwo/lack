@@ -211,6 +211,11 @@ module.exports = async () => {
   addConfigFile('.gitignore');
   addConfigFile('.npmignore');
 
+  if (!fs.existsSync('README.md')) {
+    const simpleName = pkg.name.substring(pkg.name.indexOf('/') + 1);
+    fs.writeFileSync('README.md', `# ${simpleName}\n`);
+  }
+
   const exportsList = [];
   if (uiServer) {
     exportsList.push('exports.uiServer = require(\'./lib/uiServer\');');
