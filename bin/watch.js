@@ -27,6 +27,10 @@ module.exports = (dirs) => {
     }
     return false;
   });
+  // 如果watchList为空，就监听整个目录
+  if (watchList.length === 0) {
+    watchList = ['.'];
+  }
   let timer;
   console.log(`Watching: ${watchList.join()}`); // eslint-disable-line
   chokidar.watch(watchList, {
