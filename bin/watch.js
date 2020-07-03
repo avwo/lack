@@ -9,7 +9,7 @@ const touch = () => {
 };
 
 module.exports = (dirs) => {
-  const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib'];
+  let watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
       dir = dir.trim();
@@ -18,6 +18,15 @@ module.exports = (dirs) => {
       }
     });
   }
+  watchList = watchList.filter((file) => {
+    try {
+      // eslint-disable-next-line no-sync
+      fs.statSync(file);
+      return true;
+    } catch (error) {
+    }
+    return false;
+  });
   let timer;
   console.log(`Watching: ${watchList.join()}`); // eslint-disable-line
   chokidar.watch(watchList, {
