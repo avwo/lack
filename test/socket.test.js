@@ -1,8 +1,9 @@
-const { setProxy, createConnection } = require('../lib');
+const net = require('net');
+const { setProxy, enableProxy } = require('../index');
 
 const PROXY_OPTIONS = {
   host: '127.0.0.1',
-  port: 8899,
+  port: 8899
 };
 
 // 动态设置代理
@@ -14,10 +15,10 @@ setProxy((options) => {
 // setProxy(PROXY_OPTIONS);
 
 (async () => {
-  const socket = await createConnection({
+  const socket = net.connect(await enableProxy({
     host: 'ke.qq.com',
     port: 80,
-  });
+  }));
   socket.write([
     'GET / HTTP/1.1',
     'Host: ke.qq.com',

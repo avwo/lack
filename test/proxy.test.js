@@ -1,7 +1,7 @@
 const http = require('http');
 const https = require('https');
 
-const { setProxy } = require('../lib');
+const { setProxy } = require('../index');
 
 const PROXY_OPTIONS = {
   host: '127.0.0.1',
