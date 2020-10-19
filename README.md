@@ -7,7 +7,7 @@
 
 lack 为 [whistle](https://github.com/avwo/whistle) 的辅助模块，用来方便使用 whistle 或协助扩展 whistle 功能，如生成 whistle 插件的脚手架，给 Node 程序注入 HTTP 代理等。
 
-> 如果不需要脚手架功能，且想要更小的安装包，可以用：https://www.npmjs.com/package/lack-proxy
+> 如果不需要脚手架功能，且想要更小的安装包，可以用：https://www.npmjs.com/package/lack
 
 ### 安装
 ``` sh
@@ -67,5 +67,31 @@ const lack = require('lack');
         };
     });
     ```
+3. 代理socket请求
 
+    上述只能配置默认只对 http 或 https 请求生效，如果想将普通 TCP/Socket 请求也通过指定代理转发，需需要显式告诉 lack 可能要代理该 socket 连接，如：
+    ``` txt
+    // 正常请求
+    const socket = net.connect({
+        host: '127.0.0.1',
+        port: 8080,
+    });
+    ```
+    需要改成：
+
+    ``` 
+    const { enableProxy } = require('lack');
+
+    const socket = net.connect(enableProxy({
+        host: '127.0.0.1',
+        port: 8080,
+    }));
+
+    或
+    const socket = net.connect({
+        host: enableProxy('127.0.0.1'),
+        port: 8080,
+    });
+    ```
+    上述配置如果不设置代理，lack-proxy会自动处理，相当于正常请求.
 有关例子可以参见[测试用例](./test)。
