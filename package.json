@@ -3,7 +3,6 @@
   "version": "0.3.4",
   "description": "whistle extension tools",
   "author": "avenwu <avwu@qq.com>",
-  "main": "./lib",
   "license": "MIT",
   "bin": {
     "lack": "./bin/index.js"
@@ -34,6 +33,7 @@
     "fs-extra": "^7.0.1",
     "hagent": "^0.6.1",
     "inquirer": "^6.3.1",
+    "lack-proxy": "^0.2.0",
     "lru-cache": "^5.1.1"
   },
   "devDependencies": {
