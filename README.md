@@ -50,8 +50,10 @@ const lack = require('lack');
     lack.proxy({
         host: '127.0.0.1',
         port: '8899',
+        // filterRequest: (options, isSocket) => {
+        //    return true || false;
+        // }, // 可选，精确过滤请求
         // servername, // 可选，参见Node的HTTPS文档，设置SNI
-        // headers, // 可选，设置代理请求头
     });
     ```
     > 程序里面的所有web请求（HTTP、HTTPS、WebSocket）都会代理到本地的 `8899` 端口的代理服务
@@ -63,35 +65,11 @@ const lack = require('lack');
             host: '127.0.0.1',
             port: '8899',
             headers: options.headers,
+            // filterRequest: (options, isSocket) => {
+            //    return true || false;
+            // }, // 可选，精确过滤请求
             // servername, // 可选，参见Node的HTTPS文档，设置SNI
         };
     });
     ```
-3. 代理socket请求
-
-    上述只能配置默认只对 http 或 https 请求生效，如果想将普通 TCP/Socket 请求也通过指定代理转发，需需要显式告诉 lack 可能要代理该 socket 连接，如：
-    ``` txt
-    // 正常请求
-    const socket = net.connect({
-        host: '127.0.0.1',
-        port: 8080,
-    });
-    ```
-    需要改成：
-
-    ``` 
-    const { enableProxy } = require('lack');
-
-    const socket = net.connect(enableProxy({
-        host: '127.0.0.1',
-        port: 8080,
-    }));
-
-    或
-    const socket = net.connect({
-        host: enableProxy('127.0.0.1'),
-        port: 8080,
-    });
-    ```
-    上述配置如果不设置代理，lack-proxy会自动处理，相当于正常请求.
 有关例子可以参见[测试用例](./test)。
