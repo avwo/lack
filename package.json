@@ -1,6 +1,6 @@
 {
   "name": "lack",
-  "version": "0.4.1",
+  "version": "1.0.0",
   "description": "whistle extension tools",
   "author": "avenwu <avwu@qq.com>",
   "license": "MIT",
@@ -33,7 +33,7 @@
     "fs-extra": "^7.0.1",
     "hagent": "^0.6.1",
     "inquirer": "^6.3.1",
-    "lack-proxy": "^0.3.0",
+    "lack-proxy": "^1.0.0",
     "lru-cache": "^5.1.1"
   },
   "devDependencies": {
