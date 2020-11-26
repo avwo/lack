@@ -7,7 +7,7 @@
 
 lack 为 [whistle](https://github.com/avwo/whistle) 的辅助模块，用来方便使用 whistle 或协助扩展 whistle 功能，如生成 whistle 插件的脚手架，给 Node 程序注入 HTTP 代理等。
 
-> 如果不需要脚手架功能，且想要更小的安装包，可以用：https://www.npmjs.com/package/lack
+> 如果不需要脚手架功能，且想要更小的安装包，可以用：https://github.com/avwo/lack-proxy
 
 ### 安装
 ``` sh
