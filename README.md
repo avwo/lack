@@ -5,9 +5,7 @@
 [![NPM count](https://img.shields.io/npm/dt/lack.svg?style=flat-square)](https://www.npmjs.com/package/lack)
 [![License](https://img.shields.io/npm/l/lack.svg?style=flat-square)](https://www.npmjs.com/package/lack)
 
-lack 为 [whistle](https://github.com/avwo/whistle) 的辅助模块，用来方便使用 whistle 或协助扩展 whistle 功能，如生成 whistle 插件的脚手架，给 Node 程序注入 HTTP 代理等。
-
-> 如果不需要脚手架功能，且想要更小的安装包，可以用：https://github.com/avwo/lack-proxy
+生成 [whistle](https://github.com/avwo/whistle) 插件的脚手架。
 
 ### 安装
 ``` sh
@@ -15,10 +13,6 @@ npm i -g lack
 ```
 
 ### 使用
-1. [插件脚手架](#插件脚手架)
-2. [注入HTTP代理](#注入HTTP代理)
-
-##### whistle插件脚手架
 严格按以下步骤操作：
 1. 新建插件目录 `whistle.xxx`（如果已存在忽略此步骤）
     > xxx 表示只包含 `a-z\d_-` 的任意字符串，具体参见帮助文档：[插件开发](https://wproxy.org/whistle/plugins.html)
@@ -40,36 +34,4 @@ npm i -g lack
     ```
 9. 更多帮助执行 `lack --help`
 
-##### 注入HTTP代理
-lack 可以给程序动态设置全局HTTP代理或根据请求参数设置（建议在程序入口设置）：
-``` js
-const lack = require('lack');
-```
-1. 设置全局HTTP代理：
-    ``` js
-    lack.proxy({
-        host: '127.0.0.1',
-        port: '8899',
-        // filterRequest: (options, isSocket) => {
-        //    return true || false;
-        // }, // 可选，精确过滤请求
-        // servername, // 可选，参见Node的HTTPS文档，设置SNI
-    });
-    ```
-    > 程序里面的所有web请求（HTTP、HTTPS、WebSocket）都会代理到本地的 `8899` 端口的代理服务
-2. 根据请求参数动态设置
-    ``` js
-    lack.proxy((options) => {
-        // 根据请求options动态设置代理
-        return {
-            host: '127.0.0.1',
-            port: '8899',
-            headers: options.headers,
-            // filterRequest: (options, isSocket) => {
-            //    return true || false;
-            // }, // 可选，精确过滤请求
-            // servername, // 可选，参见Node的HTTPS文档，设置SNI
-        };
-    });
-    ```
-有关例子可以参见[测试用例](./test)。
+更多信息参考插件示例：[https://github.com/whistle-plugins/examples](https://github.com/whistle-plugins/examples)

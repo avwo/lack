@@ -8,8 +8,8 @@
     "lack": "./bin/index.js"
   },
   "scripts": {
-    "lint": "eslint bin lib test",
-    "lintfix": "eslint --fix bin lib test",
+    "lint": "eslint bin",
+    "lintfix": "eslint --fix bin",
     "init": "node bin init",
     "watch": "node bin watch"
   },
@@ -33,7 +33,6 @@
     "fs-extra": "^7.0.1",
     "hagent": "^0.6.1",
     "inquirer": "^6.3.1",
-    "lack-proxy": "^1.1.6",
     "lru-cache": "^5.1.1"
   },
   "devDependencies": {
