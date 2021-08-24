@@ -243,6 +243,13 @@ module.exports = async () => {
       }
     }
   }
+  if (authFn) {
+    exportsList.push('exports.auth = require(\'./lib/auth\');');
+    if (!fs.existsSync('lib/auth.js')) {
+      ensureLibExist();
+      fse.copySync(authFn, 'lib/auth.js');
+    }
+  }
   Object.keys(rulesFiles).forEach((file) => {
     file = rulesFiles[file];
     if (!fs.existsSync(file)) {
