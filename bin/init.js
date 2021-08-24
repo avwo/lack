@@ -51,6 +51,17 @@ const addConfigFile = (name) => {
   }
 };
 
+const selectAuth = async () => {
+  const { auth } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'auth',
+      message: 'Do you need auth function?',
+    },
+  ]);
+  return auth && path.join(ASSETS_DIR, 'auth.js');
+};
+
 const selectUIServer = async () => {
   const { uiServer } = await inquirer.prompt([
     {
@@ -180,12 +191,16 @@ module.exports = async () => {
   pkg.version = pkg.version || '1.0.0';
   pkg.description = pkg.description || '';
 
+  const authFn = await selectAuth();
   const uiServer = await selectUIServer();
   const rulesServers = await selectRulesServers();
   const statsServers = await selectStatsServers();
   const pipeServers = await selectPipeServers();
   const rulesFiles = await selectRulesFiles();
   const msg = [`\n\n\nPlugin Name: ${pkg.name}`];
+  if (authFn) {
+    msg.push('\nAuth function: Yes');
+  }
   if (uiServer) {
     msg.push('\nUI Server: Yes');
   }
