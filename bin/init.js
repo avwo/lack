@@ -191,8 +191,8 @@ module.exports = async () => {
   pkg.version = pkg.version || '1.0.0';
   pkg.description = pkg.description || '';
 
-  const authFn = await selectAuth();
   const uiServer = await selectUIServer();
+  const authFn = await selectAuth();
   const rulesServers = await selectRulesServers();
   const statsServers = await selectStatsServers();
   const pipeServers = await selectPipeServers();
