@@ -62,6 +62,17 @@ const selectAuth = async () => {
   return auth && path.join(ASSETS_DIR, 'auth.js');
 };
 
+const selectSni = async () => {
+  const { sni } = await inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'sni',
+      message: 'Do you need sniCallback function?',
+    },
+  ]);
+  return sni && path.join(ASSETS_DIR, 'sniCallback.js');
+};
+
 const selectUIServer = async () => {
   const { uiServer } = await inquirer.prompt([
     {
@@ -193,6 +204,7 @@ module.exports = async () => {
 
   const uiServer = await selectUIServer();
   const authFn = await selectAuth();
+  const sniCallback = await selectSni();
   const rulesServers = await selectRulesServers();
   const statsServers = await selectStatsServers();
   const pipeServers = await selectPipeServers();
@@ -200,6 +212,9 @@ module.exports = async () => {
   const msg = [`\n\n\nPlugin Name: ${pkg.name}`];
   if (authFn) {
     msg.push('\nAuth function: Yes');
+  }
+  if (sniCallback) {
+    msg.push('\nSNI Callback function: Yes');
   }
   if (uiServer) {
     msg.push('\nUI Server: Yes');
@@ -248,6 +263,13 @@ module.exports = async () => {
     if (!fs.existsSync('lib/auth.js')) {
       ensureLibExist();
       fse.copySync(authFn, 'lib/auth.js');
+    }
+  }
+  if (sniCallback) {
+    exportsList.push('exports.sniCallback = require(\'./lib/sniCallback\');');
+    if (!fs.existsSync('lib/sniCallback.js')) {
+      ensureLibExist();
+      fse.copySync(sniCallback, 'lib/sniCallback.js');
     }
   }
   Object.keys(rulesFiles).forEach((file) => {
