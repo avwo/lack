@@ -3,9 +3,14 @@ const fs = require('fs');
 const fse = require('fs-extra');
 const path = require('path');
 /* eslint-disable no-sync */
+let type = 'ts';
 const ASSETS_DIR = path.join(__dirname, '../assets');
 const NAME_RE = /^(@[a-z\d_-]+\/)?(whistle\.)?([a-z\d_-]+)$/;
-const NAME_TIPS = 'The plugin name can only contain a~z, 0~9, _ and -.';
+const NAME_TIPS = 'The plugin name can only contain [a~z0~9_-].';
+const TEMPLATES = [
+  'TypeScript',
+  'JavaScript',
+];
 const RULES_SERVERS = [
   'rulesServer',
   'tunnelRulesServer',
@@ -51,6 +56,22 @@ const addConfigFile = (name) => {
   }
 };
 
+const selectTemplate = async () => {
+  const { template } = await inquirer.prompt([
+    {
+      type: 'list',
+      name: 'template',
+      message: 'Select template:',
+      choices: TEMPLATES,
+    },
+  ]);
+  if (template === 'TypeScript') {
+    return template;
+  }
+  type = 'js';
+  return 'TypeScript';
+};
+
 const selectAuth = async () => {
   const { auth } = await inquirer.prompt([
     {
@@ -59,7 +80,7 @@ const selectAuth = async () => {
       message: 'Do you need auth function?',
     },
   ]);
-  return auth && path.join(ASSETS_DIR, 'auth.js');
+  return auth && path.join(ASSETS_DIR, type, `auth.${type}`);
 };
 
 const selectSni = async () => {
@@ -70,7 +91,7 @@ const selectSni = async () => {
       message: 'Do you need sniCallback function?',
     },
   ]);
-  return sni && path.join(ASSETS_DIR, 'sniCallback.js');
+  return sni && path.join(ASSETS_DIR, type, `sniCallback.${type}`);
 };
 
 const selectUIServer = async () => {
@@ -81,7 +102,7 @@ const selectUIServer = async () => {
       message: 'Do you need uiServer?',
     },
   ]);
-  return uiServer && path.join(ASSETS_DIR, 'uiServer');
+  return uiServer && path.join(ASSETS_DIR, type, 'uiServer');
 };
 
 const selectRulesServers = async () => {
@@ -95,7 +116,7 @@ const selectRulesServers = async () => {
     },
   ]);
   rulesServers.forEach((hook) => {
-    servers[hook] = path.join(ASSETS_DIR, `${hook}.js`);
+    servers[hook] = path.join(ASSETS_DIR, type, `${hook}.${type}`);
   });
   return servers;
 };
@@ -111,7 +132,7 @@ const selectStatsServers = async () => {
     },
   ]);
   statsServers.forEach((hook) => {
-    servers[hook] = path.join(ASSETS_DIR, `${hook}.js`);
+    servers[hook] = path.join(ASSETS_DIR, type, `${hook}.${type}`);
   });
   return servers;
 };
@@ -129,7 +150,7 @@ const selectPipeServers = async () => {
   pipeServers.join('+').split('+').forEach((hook) => {
     hook = hook.trim();
     if (hook) {
-      servers[hook] = path.join(ASSETS_DIR, `${hook}.js`);
+      servers[hook] = path.join(ASSETS_DIR, type, `${hook}.${type}`);
     }
   });
   return servers;
@@ -201,7 +222,7 @@ module.exports = async () => {
   pkg.name = `${RegExp.$1 || ''}${RegExp.$2 || 'whistle.'}${RegExp.$3}`;
   pkg.version = pkg.version || '1.0.0';
   pkg.description = pkg.description || '';
-
+  const template = await selectTemplate();
   const uiServer = await selectUIServer();
   const authFn = await selectAuth();
   const sniCallback = await selectSni();
@@ -209,7 +230,7 @@ module.exports = async () => {
   const statsServers = await selectStatsServers();
   const pipeServers = await selectPipeServers();
   const rulesFiles = await selectRulesFiles();
-  const msg = [`\n\n\nPlugin Name: ${pkg.name}`];
+  const msg = [`\n\n\nPlugin Name: ${pkg.name}`, `\nTemplate: ${template}`];
   if (authFn) {
     msg.push('\nAuth function: Yes');
   }
@@ -235,6 +256,9 @@ module.exports = async () => {
     return;
   }
 
+  if (template === 'TypeScript') {
+    pkg.devDependencies = {};
+  }
   addConfigFile('editorconfig');
   addConfigFile('gitignore');
   addConfigFile('npmignore');
