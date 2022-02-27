@@ -1,16 +1,4 @@
-// Type definitions for Whistle 2.9
-// Project: https://wproxy.org
-// Definitions by: Aven Wu <https://github.com/avwo>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-
-/* =================== USAGE ===================
-
-    import startWhistle from 'whistle';
-    startWhistle(options, callback);
-
- =============================================== */
-
- /// <reference types="node" />
+/// <reference types="node" />
 
  import { IncomingMessage, ServerResponse, Server } from 'http';
  import { ParsedUrlQuery } from 'querystring';
