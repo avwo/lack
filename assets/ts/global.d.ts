@@ -2,6 +2,7 @@
 
 import { IncomingMessage, ServerResponse, Server } from 'http';
 import { ParsedUrlQuery } from 'querystring';
+import { Socket } from 'net';
 import LRUCache = require('lru-cache');
 
 declare global {
@@ -249,6 +250,7 @@ declare global {
    }
 
    type PluginResponse = ServerResponse;
+   type PluginSocket = Socket;
    type PluginServer = Server;
    class PluginServerRequest extends PluginRequest {
      setReqRules: SetRules;
