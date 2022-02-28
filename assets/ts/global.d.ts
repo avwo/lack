@@ -292,9 +292,11 @@ declare global {
      mtime?: number;
    };
 
-   type PluginAuthHook = (req: PluginAuthRequest, options?: PluginOptions) => Promise<boolean>;
-   type PluginSNIHook = (req: PluginSNIRequest, options?: PluginOptions) => PluginSNIResult | Promise<PluginSNIResult>;
-   type PluginHook = (server: PluginServer, options?: PluginOptions) => void | Promise<void>;
-   type PluginUIHook = (server: PluginServer, options?: PluginOptions) => void | Promise<void>;
+   type Result<T> = T | Promise<T>;
+
+   type PluginAuthHook = (req: PluginAuthRequest, options?: PluginOptions) => Result<boolean>;
+   type PluginSNIHook = (req: PluginSNIRequest, options?: PluginOptions) => Result<PluginSNIResult>;
+   type PluginHook = (server: PluginServer, options?: PluginOptions) => Result<void>;
+   type PluginUIHook = (server: PluginServer, options?: PluginOptions) => Result<void>;
  }
 }
