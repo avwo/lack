@@ -266,6 +266,12 @@ declare global {
      setResRules: SetRules;
      disableTrailers?: boolean;
    }
+
+   class PluginServerSocket extends Socket {
+    setReqRules: SetRules;
+    setResRules: SetRules;
+    disableTrailers?: boolean;
+  }
    class PluginUIRequest extends IncomingMessage {
      clientIp: string;
      Storage: Storage;
@@ -280,6 +286,7 @@ declare global {
      setUrl(url: string): void;
      setFile(url: string): void;
      setHeader(key: string, value: string): void;
+     set(key: string, value: string): void;
      setRedirect(url: string): void;
      setLogin(login: boolean): void;
    }
