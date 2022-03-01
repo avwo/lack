@@ -1,5 +1,5 @@
 
-module.exports = (server: Whistle.PluginServer/*, options: Whistle.PluginOptions*/) => {
+export default (server: Whistle.PluginServer/*, options: Whistle.PluginOptions*/) => {
   // handle http request
   server.on('request', (req: Whistle.PluginServerRequest, res: Whistle.PluginServerResponse) => {
     // do something
