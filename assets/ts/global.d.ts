@@ -3,9 +3,45 @@
 import { IncomingMessage, ServerResponse, Server } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { Socket } from 'net';
-import LRUCache = require('lru-cache');
 
 declare global {
+  interface LRUOptions<K = any, V = any> {
+    max?: number | undefined;
+    maxAge?: number | undefined;
+    length?(value: V, key?: K): number;
+    dispose?(key: K, value: V): void;
+    stale?: boolean | undefined;
+    noDisposeOnSet?: boolean | undefined;
+  }
+
+  interface LRUEntry<K, V> {
+    k: K;
+    v: V;
+    e: number;
+  }
+
+  class LRUCache<K, V = any> {
+    constructor(options?: LRUOptions<K, V>);
+    readonly length: number;
+    readonly itemCount: number;
+    allowStale: boolean;
+    lengthCalculator(value: V): number;
+    max: number;
+    maxAge: number;
+    set(key: K, value: V, maxAge?: number): boolean;
+    get(key: K): V | undefined;
+    peek(key: K): V | undefined;
+    has(key: K): boolean;
+    del(key: K): void;
+    reset(): void;
+    prune(): void;
+    forEach<T = this>(callbackFn: (this: T, value: V, key: K, cache: this) => void, thisArg?: T): void;
+    rforEach<T = this>(callbackFn: (this: T, value: V, key: K, cache: this) => void, thisArg?: T): void;
+    keys(): K[];
+    values(): V[];
+    dump(): Array<LRUEntry<K, V>>;
+    load(cacheEntries: ReadonlyArray<LRUEntry<K, V>>): void;
+  }
  namespace Whistle {
    type Body = string | false;
 
@@ -154,7 +190,7 @@ declare global {
      localStorage: Storage;
      storage: Storage;
      baseUrl: string;
-     LRU: LRUCache;
+     LRU: LRUCache<string>;
      getValue(key: string, cb: (value: string) => void): void;
      getCert(domain: string, cb: (cert: any) => void): void;
      getRootCA(cb: (cert: any) => void): void;
