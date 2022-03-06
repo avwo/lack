@@ -20,8 +20,8 @@ declare global {
     e: number;
   }
 
-  class LRUCache<K = any, V = any> {
-    constructor(options?: LRUOptions<K, V>);
+  interface LRUCache<K = any, V = any> {
+    new (options?: LRUOptions<K, V>): this;
     readonly length: number;
     readonly itemCount: number;
     allowStale: boolean;
@@ -111,8 +111,8 @@ declare global {
      selected: boolean;
    }
 
-   class Storage {
-     constructor(dir: string, filters?: object, disabled?: boolean);
+   interface Storage {
+     new (dir: string, filters?: object, disabled?: boolean): this;
      count(): number;
      existsFile(file: string): false | File;
      getFileList(origin: boolean): File[];
