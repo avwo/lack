@@ -20,7 +20,7 @@ declare global {
     e: number;
   }
 
-  class LRUCache<K, V = any> {
+  class LRUCache<K = any, V = any> {
     constructor(options?: LRUOptions<K, V>);
     readonly length: number;
     readonly itemCount: number;
@@ -190,7 +190,7 @@ declare global {
      localStorage: Storage;
      storage: Storage;
      baseUrl: string;
-     LRU: LRUCache<string>;
+     LRU: LRUCache;
      getValue(key: string, cb: (value: string) => void): void;
      getCert(domain: string, cb: (cert: any) => void): void;
      getRootCA(cb: (cert: any) => void): void;
