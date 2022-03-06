@@ -5,13 +5,16 @@ import { ParsedUrlQuery } from 'querystring';
 import { Socket } from 'net';
 
 declare global {
-  interface LRUOptions<K = any, V = any> {
-    max?: number | undefined;
-    maxAge?: number | undefined;
+ namespace Whistle {
+   type Body = string | false;
+
+   interface LRUOptions<K = any, V = any> {
+    max?: number;
+    maxAge?: number;
     length?(value: V, key?: K): number;
     dispose?(key: K, value: V): void;
-    stale?: boolean | undefined;
-    noDisposeOnSet?: boolean | undefined;
+    stale?: boolean;
+    noDisposeOnSet?: boolean;
   }
 
   interface LRUEntry<K, V> {
@@ -29,8 +32,8 @@ declare global {
     max: number;
     maxAge: number;
     set(key: K, value: V, maxAge?: number): boolean;
-    get(key: K): V | undefined;
-    peek(key: K): V | undefined;
+    get(key: K): V;
+    peek(key: K): V;
     has(key: K): boolean;
     del(key: K): void;
     reset(): void;
@@ -42,8 +45,6 @@ declare global {
     dump(): Array<LRUEntry<K, V>>;
     load(cacheEntries: ReadonlyArray<LRUEntry<K, V>>): void;
   }
- namespace Whistle {
-   type Body = string | false;
 
    interface Frame {
      reqId: string;
