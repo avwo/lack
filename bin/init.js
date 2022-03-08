@@ -69,7 +69,7 @@ const selectTemplate = async () => {
     return template;
   }
   type = 'js';
-  return 'TypeScript';
+  return 'JavaScript';
 };
 
 const selectAuth = async () => {
