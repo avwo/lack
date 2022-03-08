@@ -257,7 +257,7 @@ module.exports = async () => {
   }
 
   if (template === 'TypeScript') {
-    pkg.devDependencies = {};
+    pkg.devDependencies = Object.assign({}, pkg.devDependencies);
   }
   addConfigFile('editorconfig');
   addConfigFile('gitignore');
