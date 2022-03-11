@@ -134,6 +134,7 @@ declare namespace Whistle {
     CUSTOM_CERT_HEADER: string;
     ENABLE_CAPTURE_HEADER: string;
     RULE_VALUE_HEADER: string;
+    RULE_PROTO_HEADER: string;
     SNI_VALUE_HEADER: string;
     RULE_URL_HEADER: string;
     MAX_AGE_HEADER: string;
