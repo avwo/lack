@@ -198,11 +198,14 @@ const setPackage = (pkg, hasUIServer) => {
   const newPkg = type === 'js' ? JS_PKG : TS_PKG;
   const keys = ['scripts', 'devDependencies'];
   if (hasUIServer) {
-    keys.push('dependencies');
+    keys.push('dependencies', 'tsTypes');
   }
   keys.forEach((key) => {
-    const value = pkg[key];
     const newValue = newPkg[key];
+    if (key === 'tsTypes') {
+      key = 'devDependencies';
+    }
+    const value = pkg[key];
     if (!newValue) {
       return;
     }
