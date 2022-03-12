@@ -1,5 +1,5 @@
 
-module.exports = (server/* , options */) => {
+module.exports = (server, options) => {
   // handle http request
   server.on('request', (req, res) => {
     // do something
