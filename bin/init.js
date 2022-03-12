@@ -4,7 +4,8 @@ const fse = require('fs-extra');
 const path = require('path');
 /* eslint-disable no-sync */
 let type = 'ts';
-const ASSETS_DIR = path.join(__dirname, '../assets');
+const ROOT = path.join(__dirname, '../');
+const ASSETS_DIR = path.join(ROOT, 'assets');
 const NAME_RE = /^(@[a-z\d_-]+\/)?(whistle\.)?([a-z\d_-]+)$/;
 const NAME_TIPS = 'The plugin name can only contain [a~z0~9_-].';
 const TEMPLATES = [
@@ -50,9 +51,17 @@ const getPackage = () => {
   return Object.assign({}, pkg);
 };
 
-const addConfigFile = (name) => {
-  if (!fs.existsSync(name)) {
-    fse.copySync(path.join(ASSETS_DIR, name), `.${name}`);
+const copySync = (src, dest) => {
+  dest = dest || src;
+  if (!fs.existsSync(dest)) {
+    fse.copySync(path.join(ROOT, src), dest);
+  }
+};
+
+const initReadme = (pkg) => {
+  if (!fs.existsSync('README.md')) {
+    const title = pkg.name.substring(pkg.name.indexOf('/') + 1);
+    fs.writeFileSync('README.md', `# ${title}\n`);
   }
 };
 
@@ -175,7 +184,7 @@ const selectRulesFiles = async () => {
 const addMsg = (obj, msg, tips) => {
   const keys = Object.keys(obj);
   if (keys.length) {
-    msg.push('\n');
+    msg.push('');
     msg.push(tips);
     keys.forEach((key) => msg.push(`    ${key}`));
   }
@@ -256,17 +265,10 @@ module.exports = async () => {
     return;
   }
 
-  if (template === 'TypeScript') {
-    pkg.devDependencies = Object.assign({}, pkg.devDependencies);
-  }
-  addConfigFile('editorconfig');
-  addConfigFile('gitignore');
-  addConfigFile('npmignore');
-
-  if (!fs.existsSync('README.md')) {
-    const simpleName = pkg.name.substring(pkg.name.indexOf('/') + 1);
-    fs.writeFileSync('README.md', `# ${simpleName}\n`);
-  }
+  initReadme(pkg);
+  copySync('.editorconfig');
+  copySync('.gitignore');
+  copySync('.npmignore');
 
   const exportsList = [];
   if (uiServer) {
