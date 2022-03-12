@@ -324,5 +324,9 @@ module.exports = async () => {
   }
   setPackage(pkg, uiServer);
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
+  if (type === 'ts') {
+    copySync('assets/ts/types/base.d.ts', 'types/base.d.ts');
+    copySync('assets/ts/types/global.d.ts', 'types/global.d.ts');
+  }
   console.log('\n\nFor help see https://github.com/avwo/lack\n\n'); // eslint-disable-line
 };
