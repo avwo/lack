@@ -4,10 +4,12 @@ const fse = require('fs-extra');
 const path = require('path');
 /* eslint-disable no-sync */
 let type = 'ts';
+let srcDir = 'src';
 const ROOT = path.join(__dirname, '../');
-const ASSETS_DIR = path.join(ROOT, 'assets');
 const NAME_RE = /^(@[a-z\d_-]+\/)?(whistle\.)?([a-z\d_-]+)$/;
 const NAME_TIPS = 'The plugin name can only contain [a~z0~9_-].';
+const TS_PKG = fse.readJSONSync(path.join(ROOT, 'assets/ts/package.json'));
+const JS_PKG = fse.readJSONSync(path.join(ROOT, 'assets/js/package.json'));
 const TEMPLATES = [
   'TypeScript',
   'JavaScript',
@@ -35,13 +37,6 @@ const RULES_FILES = [
   '_rules.txt',
   'resRules.txt',
 ];
-const UI_DEPS = {
-  koa: '^2.7.0',
-  'koa-bodyparser': '^4.2.1',
-  'koa-onerror': '^4.1.0',
-  'koa-router': '^7.4.0',
-  'koa-static': '^5.0.0',
-};
 
 const getPackage = () => {
   let pkg;
@@ -65,6 +60,14 @@ const initReadme = (pkg) => {
   }
 };
 
+const readIndexFile = () => {
+  try {
+    const text = fs.readFileSync('index.js', { encoding: 'utf8' }).trim();
+    return text && `${text}\n`;
+  } catch (e) {}
+  return '';
+};
+
 const selectTemplate = async () => {
   const { template } = await inquirer.prompt([
     {
@@ -78,6 +81,7 @@ const selectTemplate = async () => {
     return template;
   }
   type = 'js';
+  srcDir = 'lib';
   return 'JavaScript';
 };
 
@@ -89,7 +93,7 @@ const selectAuth = async () => {
       message: 'Do you need auth function?',
     },
   ]);
-  return auth && path.join(ASSETS_DIR, type, `auth.${type}`);
+  return auth && `${srcDir}/auth.${type}`;
 };
 
 const selectSni = async () => {
@@ -100,7 +104,7 @@ const selectSni = async () => {
       message: 'Do you need sniCallback function?',
     },
   ]);
-  return sni && path.join(ASSETS_DIR, type, `sniCallback.${type}`);
+  return sni && `${srcDir}/sniCallback.${type}`;
 };
 
 const selectUIServer = async () => {
@@ -111,11 +115,18 @@ const selectUIServer = async () => {
       message: 'Do you need uiServer?',
     },
   ]);
-  return uiServer && path.join(ASSETS_DIR, type, 'uiServer');
+  return uiServer && `${srcDir}/uiServer`;
+};
+
+const setHookFile = (hooks) => {
+  const servers = {};
+  hooks.forEach((hook) => {
+    servers[hook] = `${srcDir}/${hook}.${type}`;
+  });
+  return servers;
 };
 
 const selectRulesServers = async () => {
-  const servers = {};
   const { rulesServers } = await inquirer.prompt([
     {
       type: 'checkbox',
@@ -124,14 +135,10 @@ const selectRulesServers = async () => {
       choices: RULES_SERVERS,
     },
   ]);
-  rulesServers.forEach((hook) => {
-    servers[hook] = path.join(ASSETS_DIR, type, `${hook}.${type}`);
-  });
-  return servers;
+  return setHookFile(rulesServers);
 };
 
 const selectStatsServers = async () => {
-  const servers = {};
   const { statsServers } = await inquirer.prompt([
     {
       type: 'checkbox',
@@ -140,14 +147,10 @@ const selectStatsServers = async () => {
       choices: STATS_SERVERS,
     },
   ]);
-  statsServers.forEach((hook) => {
-    servers[hook] = path.join(ASSETS_DIR, type, `${hook}.${type}`);
-  });
-  return servers;
+  return setHookFile(statsServers);
 };
 
 const selectPipeServers = async () => {
-  const servers = {};
   const { pipeServers } = await inquirer.prompt([
     {
       type: 'checkbox',
@@ -156,13 +159,14 @@ const selectPipeServers = async () => {
       choices: PIPE_SERVERS,
     },
   ]);
+  const hooks = [];
   pipeServers.join('+').split('+').forEach((hook) => {
     hook = hook.trim();
     if (hook) {
-      servers[hook] = path.join(ASSETS_DIR, type, `${hook}.${type}`);
+      hooks.push(hook);
     }
   });
-  return servers;
+  return setHookFile(hooks);
 };
 
 const selectRulesFiles = async () => {
@@ -190,19 +194,28 @@ const addMsg = (obj, msg, tips) => {
   }
 };
 
-const readIndexFile = () => {
-  try {
-    return fs.readFileSync('index.js', { encoding: 'utf8' });
-  } catch (e) {}
-  return '';
-};
-
-let done;
-const ensureLibExist = () => {
-  if (!done) {
-    done = true;
-    fse.ensureDirSync('lib');
+const setPackage = (pkg, hasUIServer) => {
+  const newPkg = type === 'js' ? JS_PKG : TS_PKG;
+  const keys = ['scripts', 'devDependencies'];
+  if (hasUIServer) {
+    keys.push('dependencies');
   }
+  keys.forEach((key) => {
+    const value = pkg[key];
+    const newValue = newPkg[key];
+    if (!newValue) {
+      return;
+    }
+    if (!value) {
+      pkg[key] = newValue;
+      return;
+    }
+    Object.keys(newValue).forEach((name) => {
+      if (!value[name]) {
+        value[name] = newValue[name];
+      }
+    });
+  });
 };
 
 module.exports = async () => {
@@ -231,6 +244,7 @@ module.exports = async () => {
   pkg.name = `${RegExp.$1 || ''}${RegExp.$2 || 'whistle.'}${RegExp.$3}`;
   pkg.version = pkg.version || '1.0.0';
   pkg.description = pkg.description || '';
+
   const template = await selectTemplate();
   const uiServer = await selectUIServer();
   const authFn = await selectAuth();
@@ -270,59 +284,45 @@ module.exports = async () => {
   copySync('.gitignore');
   copySync('.npmignore');
 
-  const exportsList = [];
+  Object.keys(rulesFiles).forEach((file) => {
+    copySync(`assets/${file}`, file);
+  });
+
+  const exportHooks = {};
+  const lib = type === 'js' ? 'lib' : 'dist';
   if (uiServer) {
-    exportsList.push('exports.uiServer = require(\'./lib/uiServer\');');
-    if (!fs.existsSync('lib/uiServer')) {
-      ensureLibExist();
-      fse.copySync(uiServer, 'lib/uiServer');
-      pkg.dependencies = pkg.dependencies || {};
-      Object.assign(pkg.dependencies, UI_DEPS);
-      if (!fs.existsSync('public/index.html')) {
-        fse.ensureDirSync('public');
-        fse.copySync(path.join(ASSETS_DIR, 'public/index.html'), 'public/index.html');
-      }
-    }
+    exportHooks.uiServer = `./${lib}/uiServer`;
+    copySync(`assets/${type}/${uiServer}`, uiServer);
+    copySync('assets/public/index.html', 'public/index.html');
   }
   if (authFn) {
-    exportsList.push('exports.auth = require(\'./lib/auth\');');
-    if (!fs.existsSync('lib/auth.js')) {
-      ensureLibExist();
-      fse.copySync(authFn, 'lib/auth.js');
-    }
+    exportHooks.auth = `./${lib}/auth`;
+    copySync(`assets/${type}/${authFn}`, authFn);
   }
   if (sniCallback) {
-    exportsList.push('exports.sniCallback = require(\'./lib/sniCallback\');');
-    if (!fs.existsSync('lib/sniCallback.js')) {
-      ensureLibExist();
-      fse.copySync(sniCallback, 'lib/sniCallback.js');
-    }
+    exportHooks.sniCallback = `./${lib}/sniCallback`;
+    copySync(`assets/${type}/${sniCallback}`, sniCallback);
   }
-  Object.keys(rulesFiles).forEach((file) => {
-    file = rulesFiles[file];
-    if (!fs.existsSync(file)) {
-      fs.writeFileSync(file, '');
-    }
-  });
   const servers = Object.assign(rulesServers, statsServers, pipeServers);
   Object.keys(servers).forEach((server) => {
-    exportsList.push(`exports.${server} = require('./lib/${server}');`);
-    const destFile = `lib/${server}.js`;
-    const srcFile = servers[server];
-    if (!fs.existsSync(destFile)) {
-      ensureLibExist();
-      fse.copySync(srcFile, destFile);
-    }
+    exportHooks[server] = `./${lib}/${server}`;
+    const file = servers[server];
+    copySync(`assets/${type}/${file}`, file);
   });
-  let indexFile = `${readIndexFile().trim()}\n`;
-  exportsList.forEach((line) => {
+
+  let indexFile = readIndexFile();
+  let hasChanged;
+  Object.keys(exportHooks).forEach((hook) => {
+    const line = `exports.${hook} = require('${exportHooks[hook]}');\n`;
     if (indexFile.indexOf(line) === -1) {
-      indexFile = `${indexFile}${line}\n`;
+      hasChanged = true;
+      indexFile = `${indexFile || '\n'}${line}`;
     }
   });
-  fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
-  if (indexFile.trim()) {
+  if (hasChanged) {
     fs.writeFileSync('index.js', indexFile);
   }
+  setPackage(pkg, uiServer);
+  fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
   console.log('\n\nFor help see https://github.com/avwo/lack\n\n'); // eslint-disable-line
 };
