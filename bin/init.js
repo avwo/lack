@@ -327,6 +327,7 @@ module.exports = async () => {
   if (type === 'ts') {
     copySync('assets/ts/types/base.d.ts', 'types/base.d.ts');
     copySync('assets/ts/types/global.d.ts', 'types/global.d.ts');
+    copySync('assets/ts/tsconfig.json', 'tsconfig.json');
   }
   console.log('\n\nFor help see https://github.com/avwo/lack\n\n'); // eslint-disable-line
 };
