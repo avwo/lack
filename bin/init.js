@@ -274,6 +274,9 @@ module.exports = async () => {
   addMsg(statsServers, msg, 'Stats Servers:');
   addMsg(pipeServers, msg, 'Pipe Servers:');
   addMsg(rulesFiles, msg, 'Rules Files:');
+  if (msg.length < 3) {
+    return;
+  }
   msg.push('\nIs this ok?');
   const { ok } = await inquirer.prompt([
     {
@@ -331,10 +334,15 @@ module.exports = async () => {
   }
   setPackage(pkg, uiServer);
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
+  let showInstall = uiServer;
   if (type === 'ts') {
-    copySync('assets/ts/types/base.d.ts', 'types/base.d.ts');
-    copySync('assets/ts/types/global.d.ts', 'types/global.d.ts');
+    showInstall = true;
+    copySync('assets/ts/src/types/base.d.ts', 'src/types/base.d.ts');
+    copySync('assets/ts/src/types/global.d.ts', 'src/types/global.d.ts');
     copySync('assets/ts/tsconfig.json', 'tsconfig.json');
   }
-  console.log('\n\nFor help see https://github.com/avwo/lack\n\n'); // eslint-disable-line
+  if (showInstall) {
+    console.log(`\nRun \`npm i\` to install dependencies`); // eslint-disable-line
+  }
+  console.log(`${showInstall ? '\n' : '\n\n'}For help see https://github.com/avwo/lack\n\n`); // eslint-disable-line
 };
