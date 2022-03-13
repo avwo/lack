@@ -90,6 +90,7 @@ const selectAuth = async () => {
     {
       type: 'confirm',
       name: 'auth',
+      default: false,
       message: 'Do you need auth function?',
     },
   ]);
@@ -101,6 +102,7 @@ const selectSni = async () => {
     {
       type: 'confirm',
       name: 'sni',
+      default: false,
       message: 'Do you need sniCallback function?',
     },
   ]);
@@ -112,6 +114,7 @@ const selectUIServer = async () => {
     {
       type: 'confirm',
       name: 'uiServer',
+      default: false,
       message: 'Do you need uiServer?',
     },
   ]);
