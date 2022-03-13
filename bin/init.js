@@ -290,9 +290,9 @@ module.exports = async () => {
   }
 
   initReadme(pkg);
-  copySync('.editorconfig');
-  copySync('.gitignore');
-  copySync('.npmignore');
+  copySync('assets/editorconfig', '.editorconfig');
+  copySync('assets/gitignore', '.gitignore');
+  copySync('assets/npmignore', '.npmignore');
 
   Object.keys(rulesFiles).forEach((file) => {
     copySync(`assets/${file}`, file);
