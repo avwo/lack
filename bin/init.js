@@ -299,7 +299,8 @@ module.exports = async () => {
   });
 
   const exportHooks = {};
-  const lib = type === 'js' ? 'lib' : 'dist';
+  const isJs = type === 'js';
+  const lib = isJs ? 'lib' : 'dist';
   if (uiServer) {
     exportHooks.uiServer = `./${lib}/uiServer`;
     copySync(`assets/${type}/${uiServer}`, uiServer);
@@ -323,7 +324,7 @@ module.exports = async () => {
   let indexFile = readIndexFile();
   let hasChanged;
   Object.keys(exportHooks).forEach((hook) => {
-    const line = `exports.${hook} = require('${exportHooks[hook]}');\n`;
+    const line = `exports.${hook} = require('${exportHooks[hook]}')${isJs ? '' : '.default'};\n`;
     if (indexFile.indexOf(line) === -1) {
       hasChanged = true;
       indexFile = `${indexFile || '\n'}${line}`;
@@ -335,7 +336,7 @@ module.exports = async () => {
   setPackage(pkg, uiServer);
   fs.writeFileSync('package.json', JSON.stringify(pkg, null, '  '));
   let showInstall = uiServer;
-  if (type === 'ts') {
+  if (!isJs) {
     showInstall = true;
     copySync('assets/ts/src/types/base.d.ts', 'src/types/base.d.ts');
     copySync('assets/ts/src/types/global.d.ts', 'src/types/global.d.ts');
