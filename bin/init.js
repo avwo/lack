@@ -73,6 +73,7 @@ const selectTemplate = async () => {
     {
       type: 'list',
       name: 'template',
+      default: fs.existsSync('lib') ? TEMPLATES[1] : TEMPLATES[0],
       message: 'Select template:',
       choices: TEMPLATES,
     },
