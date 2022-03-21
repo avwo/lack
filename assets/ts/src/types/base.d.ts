@@ -4,7 +4,6 @@ import { IncomingMessage, ServerResponse, Server } from 'http';
 import { ParsedUrlQuery } from 'querystring';
 import { Socket } from 'net';
 
-/* eslint-disable @typescript-eslint/camelcase */
 declare global {
   namespace WhistleBase {
     class Request extends IncomingMessage {}

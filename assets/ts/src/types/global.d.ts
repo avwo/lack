@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/triple-slash-reference */
+/* eslint-disable @typescript-eslint/triple-slash-reference, @typescript-eslint/naming-convention */
 
 /// <reference path="base.d.ts" />
 
