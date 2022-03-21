@@ -6,42 +6,42 @@ declare namespace Whistle {
   type Body = string | false;
 
   interface LRUOptions<K = any, V = any> {
-   max?: number;
-   maxAge?: number;
-   length?(value: V, key?: K): number;
-   dispose?(key: K, value: V): void;
-   stale?: boolean;
-   noDisposeOnSet?: boolean;
- }
+    max?: number;
+    maxAge?: number;
+    length?(value: V, key?: K): number;
+    dispose?(key: K, value: V): void;
+    stale?: boolean;
+    noDisposeOnSet?: boolean;
+  }
 
- interface LRUEntry<K, V> {
-   k: K;
-   v: V;
-   e: number;
- }
+  interface LRUEntry<K, V> {
+    k: K;
+    v: V;
+    e: number;
+  }
 
- interface LRUCache<K = any, V = any> {
-   new (options?: LRUOptions<K, V>): this;
-   readonly length: number;
-   readonly itemCount: number;
-   allowStale: boolean;
-   lengthCalculator(value: V): number;
-   max: number;
-   maxAge: number;
-   set(key: K, value: V, maxAge?: number): boolean;
-   get(key: K): V;
-   peek(key: K): V;
-   has(key: K): boolean;
-   del(key: K): void;
-   reset(): void;
-   prune(): void;
-   forEach<T = this>(callbackFn: (this: T, value: V, key: K, cache: this) => void, thisArg?: T): void;
-   rforEach<T = this>(callbackFn: (this: T, value: V, key: K, cache: this) => void, thisArg?: T): void;
-   keys(): K[];
-   values(): V[];
-   dump(): Array<LRUEntry<K, V>>;
-   load(cacheEntries: ReadonlyArray<LRUEntry<K, V>>): void;
- }
+  interface LRUCache<K = any, V = any> {
+    new (options?: LRUOptions<K, V>): this;
+    readonly length: number;
+    readonly itemCount: number;
+    allowStale: boolean;
+    lengthCalculator(value: V): number;
+    max: number;
+    maxAge: number;
+    set(key: K, value: V, maxAge?: number): boolean;
+    get(key: K): V;
+    peek(key: K): V;
+    has(key: K): boolean;
+    del(key: K): void;
+    reset(): void;
+    prune(): void;
+    forEach<T = this>(callbackFn: (this: T, value: V, key: K, cache: this) => void, thisArg?: T): void;
+    rforEach<T = this>(callbackFn: (this: T, value: V, key: K, cache: this) => void, thisArg?: T): void;
+    keys(): K[];
+    values(): V[];
+    dump(): Array<LRUEntry<K, V>>;
+    load(cacheEntries: ReadonlyArray<LRUEntry<K, V>>): void;
+  }
 
   interface Frame {
     reqId: string;
@@ -134,7 +134,6 @@ declare namespace Whistle {
     CUSTOM_CERT_HEADER: string;
     ENABLE_CAPTURE_HEADER: string;
     RULE_VALUE_HEADER: string;
-    RULE_PROTO_HEADER: string;
     SNI_VALUE_HEADER: string;
     RULE_URL_HEADER: string;
     MAX_AGE_HEADER: string;
@@ -303,10 +302,10 @@ declare namespace Whistle {
   }
 
   class PluginServerSocket extends WhistleBase.Socks {
-   setReqRules: SetRules;
-   setResRules: SetRules;
-   disableTrailers?: boolean;
- }
+    setReqRules: SetRules;
+    setResRules: SetRules;
+    disableTrailers?: boolean;
+  }
   class PluginUIRequest extends WhistleBase.Request {
     clientIp: string;
     Storage: Storage;
