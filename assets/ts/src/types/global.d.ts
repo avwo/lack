@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/triple-slash-reference */
+
 /// <reference path="base.d.ts" />
 
 declare module 'koa-onerror';
