@@ -268,6 +268,7 @@ declare namespace Whistle {
       commonName: string;
       realUrl: string;
       relativeUrl: string;
+      extraUrl: string;
       method: string;
       clientPort: string;
       globalValue: string;
