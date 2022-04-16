@@ -9,7 +9,7 @@ const touch = () => {
 };
 
 module.exports = (dirs) => {
-  const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib'];
+  const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib', 'dist'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
       dir = dir.trim();
@@ -19,7 +19,7 @@ module.exports = (dirs) => {
     });
   }
   let timer;
-  console.log(`Watching: ${watchList.join()}`); // eslint-disable-line
+  console.log(`Watching the following files/folders changes:\n${watchList.join('\n')}\n`); // eslint-disable-line
   chokidar.watch(watchList, {
     ignored: /(^|[/\\])(\..|node_modules([/\\]|$))/,
   }).on('raw', (_, filename) => {
