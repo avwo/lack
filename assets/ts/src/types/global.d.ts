@@ -201,6 +201,7 @@ declare namespace Whistle {
     compose(options: any, cb: (err: any, data?: any) => void): void;
     getRules(cb: (rules: any) => void): void;
     getValues(cb: (values: any) => void): void;
+    getPlugins(cb: (plugins: any) => void): void;
     getCustomCertsInfo(cb: (certs: any) => void): void;
     isActive(cb: (active: boolean) => void): void;
     ctx: any;
