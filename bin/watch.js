@@ -1,11 +1,22 @@
 const chokidar = require('chokidar');
+const path = require('path');
 const fs = require('fs');
+
+const logFile = path.join(process.pwd(), '.console.log');
 
 const touch = () => {
   try {
     const now = new Date();
     fs.utimesSync('package.json', now, now); // eslint-disable-line
   } catch (e) {}
+};
+
+const register = () => {
+  setTimeout(register, 30000);
+};
+
+const showLog = () => {
+  setTimeout(showLog, 100);
 };
 
 module.exports = (dirs) => {
@@ -32,5 +43,10 @@ module.exports = (dirs) => {
       touch();
     }, 1000);
   }).on('error', () => {});
+  try {
+    fs.unlinkSync(logFile); // eslint-disable-line
+  } catch (e) {}
   touch();
+  register();
+  setTimeout(showLog, 100);
 };
