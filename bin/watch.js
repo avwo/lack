@@ -2,7 +2,9 @@ const chokidar = require('chokidar');
 const path = require('path');
 const fs = require('fs');
 
-const logFile = path.join(process.pwd(), '.console.log');
+const ROOT = process.cwd();
+const logFile = path.join(ROOT, '.console.log');
+let start = 0;
 
 const touch = () => {
   try {
@@ -15,11 +17,27 @@ const register = () => {
   setTimeout(register, 30000);
 };
 
-const showLog = () => {
-  setTimeout(showLog, 100);
+const readLog = () => {
+  let reader = fs.createReadStream(logFile, { start });
+  const onEnd = () => {
+    if (!reader) {
+      return;
+    }
+    reader = null;
+    setTimeout(readLog, 100);
+  };
+  reader.on('data', (chunk) => {
+    start += chunk.length;
+    process.stdout.write(chunk);
+  });
+  reader.once('end', onEnd);
+  reader.on('error', onEnd);
 };
 
 module.exports = (dirs) => {
+  try {
+    fs.unlinkSync(logFile); // eslint-disable-line
+  } catch (e) {}
   const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib', 'dist'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
@@ -34,19 +52,17 @@ module.exports = (dirs) => {
   chokidar.watch(watchList, {
     ignored: /(^|[/\\])(\..|node_modules([/\\]|$))/,
   }).on('raw', (_, filename) => {
-    if (filename.includes('package.json')) {
+    if (filename.includes('package.json') || filename.includes('.console.log')) {
       return;
     }
     clearTimeout(timer);
     timer = setTimeout(() => {
+      console.log(''); // eslint-disable-line
       console.log(`${filename} is changed.`); // eslint-disable-line
       touch();
     }, 1000);
   }).on('error', () => {});
-  try {
-    fs.unlinkSync(logFile); // eslint-disable-line
-  } catch (e) {}
   touch();
   register();
-  setTimeout(showLog, 100);
+  setTimeout(readLog, 100);
 };
