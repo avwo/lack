@@ -42,4 +42,4 @@ jspm_packages
 /src
 /test
 /.history
-/.console.log
+.console.log

@@ -61,4 +61,4 @@ typings/
 .next
 /.history
 /dist
-/.console.log
+.console.log
