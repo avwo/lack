@@ -1,8 +1,23 @@
 const chokidar = require('chokidar');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
+const fse = require('fs-extra');
+/* eslint-disable no-sync */
+const HOME_DIR_RE = /^[~～]\//;
+const PLUGIN_NAME_RE = /^(?:@[\w-]+\/)?(whistle\.[a-z\d_-]+)$/;
 
+const getWhistlePath = () => {
+  const dir = process.env.WHISTLE_PATH;
+  if (dir) {
+    return HOME_DIR_RE.test(dir) ? path.join(os.homedir(), `.${dir.substring(1)}`) : dir;
+  }
+  return path.join(os.homedir(), '.WhistleAppData');
+};
+
+const DEV_PLUGINS = path.join(getWhistlePath(), 'dev_plugins');
 const ROOT = process.cwd();
+const pkgFile = path.join(ROOT, 'package.json');
 const logFile = path.join(ROOT, '.console.log');
 let start = 0;
 
@@ -14,7 +29,14 @@ const touch = () => {
 };
 
 const register = () => {
-  setTimeout(register, 30000);
+  try {
+    let { name } = fse.readJSONSync(pkgFile);
+    if (PLUGIN_NAME_RE.test(name)) {
+      name = RegExp.$1;
+      fs.writeFileSync(path.join(DEV_PLUGINS, name), `${Date.now()}\n${ROOT}`);
+    }
+  } catch (e) {}
+  setTimeout(register, 6000);
 };
 
 const readLog = () => {
@@ -38,6 +60,7 @@ module.exports = (dirs) => {
   try {
     fs.unlinkSync(logFile); // eslint-disable-line
   } catch (e) {}
+  fse.ensureDirSync(DEV_PLUGINS);
   const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt', 'lib', 'dist'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
