@@ -39,7 +39,24 @@ const register = () => {
   setTimeout(register, 6000);
 };
 
+const getLogSize = () => {
+  try {
+    return fs.statSync(logFile).size;
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      return 0;
+    }
+  }
+  return -1;
+};
+
 const readLog = () => {
+  if (start > 0) {
+    const size = getLogSize();
+    if (size >= 0 && start > size) {
+      start = size;
+    }
+  }
   let reader = fs.createReadStream(logFile, { start });
   const onEnd = () => {
     if (!reader) {
