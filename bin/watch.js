@@ -6,6 +6,7 @@ const fse = require('fs-extra');
 /* eslint-disable no-sync */
 const HOME_DIR_RE = /^[~～]\//;
 const PLUGIN_NAME_RE = /^(?:@[\w-]+\/)?(whistle\.[a-z\d_-]+)$/;
+const REL_RE = /^\.\.[\\/]/;
 
 const getWhistlePath = () => {
   const dir = process.env.WHISTLE_PATH;
@@ -88,13 +89,26 @@ module.exports = (dirs) => {
     });
   }
   let timer;
-  const tips = watchList.map((name, i) => `${i + 1}. ${name}`).join('\n');
+  const paths = [];
+  const cwd = process.cwd();
+  const tips = watchList.map((name, i) => {
+    paths.push(path.resolve(cwd, name));
+    return `${i + 1}. ${name}`;
+  }).join('\n');
+  const len = paths.length;
+  const inWatchList = (filename) => {
+    for (let i = 0; i < len; i++) {
+      if (!REL_RE.test(path.relative(filename, paths[i]))) {
+        return true;
+      }
+    }
+  };
   console.log(`Watching the following files/folders changes:\n${tips}`); // eslint-disable-line
   console.log('\n*********************************************\n'); // eslint-disable-line
   chokidar.watch(watchList, {
     ignored: /(^|[/\\])(\..|node_modules([/\\]|$))/,
   }).on('raw', (_, filename) => {
-    if (filename.includes('package.json') || filename.includes('.console.log')) {
+    if (filename.includes('package.json') || filename.includes('.console.log') || !inWatchList(filename)) {
       return;
     }
     clearTimeout(timer);
