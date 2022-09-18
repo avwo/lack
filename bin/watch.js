@@ -6,7 +6,7 @@ const fse = require('fs-extra');
 /* eslint-disable no-sync */
 const HOME_DIR_RE = /^[~～]\//;
 const PLUGIN_NAME_RE = /^(?:@[\w-]+\/)?(whistle\.[a-z\d_-]+)$/;
-const REL_RE = /^(?:\.\.[\\/]+)*(?:\.\.)?$/;
+const REL_RE = /^\.\.[\\/]+/;
 
 const getWhistlePath = () => {
   const dir = process.env.WHISTLE_PATH;
@@ -98,7 +98,7 @@ module.exports = (dirs) => {
   const len = paths.length;
   const inWatchList = (filename) => {
     for (let i = 0; i < len; i++) {
-      if (REL_RE.test(path.relative(filename, paths[i]))) {
+      if (!REL_RE.test(path.relative(paths[i], filename))) {
         return true;
       }
     }
