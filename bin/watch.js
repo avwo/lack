@@ -88,7 +88,9 @@ module.exports = (dirs) => {
     });
   }
   let timer;
-  console.log(`Watching the following files/folders changes:\n${watchList.join('\n')}\n`); // eslint-disable-line
+  const tips = watchList.map((name, i) => `${i + 1}. ${name}`).join('\n');
+  console.log(`Watching the following files/folders changes:\n${tips}`); // eslint-disable-line
+  console.log('\n*********************************************\n'); // eslint-disable-line
   chokidar.watch(watchList, {
     ignored: /(^|[/\\])(\..|node_modules([/\\]|$))/,
   }).on('raw', (_, filename) => {
