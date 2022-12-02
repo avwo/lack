@@ -222,10 +222,10 @@ declare namespace Whistle {
   type PluginResExt = PluginDecoder & WhistleBase.Request;
   type PluginNextResult = {
     rules?: string | null | undefined;
-    body: any;
+    body?: any;
   };
-  type PluginReqHandler = (buffer: Buffer | null,  next: (result: PluginNextResult) => void, options?: PluginReqExt) => void;
-  type PluginResHandler = (buffer: Buffer | null,  next: (result: PluginNextResult) => void, options?: PluginResExt) => void;
+  type PluginReqHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, options?: PluginReqExt) => void;
+  type PluginResHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, options?: PluginResExt) => void;
   type PassThroughReq = PluginReqHandler | { [key: string]: any } | null | undefined;
   type PassThroughRes = PluginResHandler | { [key: string]: any } | null | undefined;
   type PassThrough = (uri?: PassThroughReq, trailers?: PassThroughRes) => void;
