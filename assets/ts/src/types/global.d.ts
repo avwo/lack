@@ -213,7 +213,22 @@ declare namespace Whistle {
   type GetSession = (cb: (session: Session | '') => void) => void;
   type GetFrame = (cb: (Frames: Frame[] | '') => void) => void;
   type SetRules = (rules: string) => boolean;
-  type PassThrough = (uri?: any, trailers?: any) => void;
+  interface PluginDecoder {
+    getText: (cb: (err: any, text?: any) => void) => string;
+    getJson: (cb: (err: any, json?: any) => void) => string;
+  }
+
+  type PluginReqExt = PluginDecoder & PluginRequest;
+  type PluginResExt = PluginDecoder & WhistleBase.Request;
+  type PluginNextResult = {
+    rules?: string | null | undefined;
+    body: any;
+  };
+  type PluginReqHandler = (buffer: Buffer | null,  next: (result: PluginNextResult) => void, options?: PluginReqExt) => void;
+  type PluginResHandler = (buffer: Buffer | null,  next: (result: PluginNextResult) => void, options?: PluginResExt) => void;
+  type PassThroughReq = PluginReqHandler | { [key: string]: any } | null | undefined;
+  type PassThroughRes = PluginResHandler | { [key: string]: any } | null | undefined;
+  type PassThrough = (uri?: PassThroughReq, trailers?: PassThroughRes) => void;
 
   interface WriteHead {
     (code: string | number, msg?: string, headers?: any): void;
