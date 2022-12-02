@@ -214,18 +214,19 @@ declare namespace Whistle {
   type GetFrame = (cb: (Frames: Frame[] | '') => void) => void;
   type SetRules = (rules: string) => boolean;
   interface PluginDecoder {
-    getText: (cb: (err: any, text?: any) => void) => string;
-    getJson: (cb: (err: any, json?: any) => void) => string;
+    getBuffer: (cb: (err: any, buf?: Buffer | null) => void) => void;
+    getText: (cb: (err: any, text?: string) => void, encoding?: string) => void;
+    getJson: (cb: (err: any, json?: any) => void, encoding?: string) => void;
   }
 
-  type PluginReqExt = PluginDecoder & PluginRequest;
-  type PluginResExt = PluginDecoder & WhistleBase.Request;
+  type PluginReqCtx = PluginDecoder & PluginRequest;
+  type PluginResCtx = PluginDecoder & WhistleBase.Request;
   type PluginNextResult = {
     rules?: string | null | undefined;
     body?: any;
   };
-  type PluginReqHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, options?: PluginReqExt) => void;
-  type PluginResHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, options?: PluginResExt) => void;
+  type PluginReqHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, ctx?: PluginReqCtx) => void;
+  type PluginResHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, ctx?: PluginResCtx) => void;
   type PassThroughReq = PluginReqHandler | { [key: string]: any } | null | undefined;
   type PassThroughRes = PluginResHandler | { [key: string]: any } | null | undefined;
   type PassThrough = (uri?: PassThroughReq, trailers?: PassThroughRes) => void;
