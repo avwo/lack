@@ -207,6 +207,8 @@ declare namespace Whistle {
     ctx: any;
     connect(opts: any, cb?: Function): any;
     request(opts: any, cb?: Function): any;
+    generateSaz(sessions: Session[]): Buffer;
+    extractSaz(saz: Buffer, cb: (sessions: Session[]) => void): void;
     [propName: string]: any;
   }
 
