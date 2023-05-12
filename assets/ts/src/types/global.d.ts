@@ -129,6 +129,13 @@ declare namespace Whistle {
     removeProperty(name: string): void;
   }
 
+  interface SharedStorage {
+    getAll: () => Promise<any>;
+    setItem: (key: any, value?: any) => Promise<any>;
+    getItem: (key: string) => any;
+    removeItem: (key: string) => any;
+  }
+
   interface PluginOptions {
     name: string;
     version: string;
@@ -190,6 +197,7 @@ declare namespace Whistle {
     Storage: Storage;
     localStorage: Storage;
     storage: Storage;
+    sharedStorage: SharedStorage;
     baseUrl: string;
     LRU: LRUCache;
     getValue(key: string, cb: (value: string) => void): void;
@@ -255,6 +263,7 @@ declare namespace Whistle {
     getFrames: GetFrame;
     Storage: Storage;
     localStorage: Storage;
+    sharedStorage: SharedStorage;
     sessionStorage: {
       set(key: string, value: any): any;
       get(key: string): any;
@@ -333,6 +342,7 @@ declare namespace Whistle {
     clientIp: string;
     Storage: Storage;
     localStorage: Storage;
+    sharedStorage: SharedStorage;
   }
 
   type PluginUIResponse = WhistleBase.Response;
