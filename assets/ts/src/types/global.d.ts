@@ -217,6 +217,7 @@ declare namespace Whistle {
     request(opts: any, cb?: Function): any;
     generateSaz(sessions: Session[]): Buffer;
     extractSaz(saz: Buffer, cb: (sessions: Session[]) => void): void;
+    getTempFilePath(ruleValue: string): string | undefined;
     [propName: string]: any;
   }
 
@@ -237,7 +238,7 @@ declare namespace Whistle {
   };
   type PluginReqHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, ctx?: PluginReqCtx) => void;
   type PluginResHandler = (buffer: Buffer | null,  next: (result?: PluginNextResult) => void, ctx?: PluginResCtx) => void;
-  type PassThroughReq = PluginReqHandler | { [key: string]: any } | null | undefined;
+  type PassThroughReq = PluginReqHandler | { [key: string]: any } | string | null | undefined;
   type PassThroughRes = PluginResHandler | { [key: string]: any } | null | undefined;
   type PassThrough = (uri?: PassThroughReq, trailers?: PassThroughRes) => void;
 
