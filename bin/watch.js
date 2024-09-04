@@ -107,10 +107,12 @@ module.exports = (dirs) => {
   };
   console.log(`Watching the following files/folders changes:\n${tips}`); // eslint-disable-line
   console.log('\n*********************************************\n'); // eslint-disable-line
+  const ignoredRe = /(^|[/\\])(\..|node_modules([/\\]|$))/;
   chokidar.watch(watchList, {
-    ignored: /(^|[/\\])(\..|node_modules([/\\]|$))/,
+    ignored: ignoredRe,
   }).on('raw', (_, filename, details) => {
-    if (filename.includes('package.json') || filename.includes('.console.log')) {
+    if (filename.includes('package.json') || filename.includes('.console.log') ||
+      ignoredRe.test(filename)) {
       return;
     }
     const watchedPath = (details && details.watchedPath) || filename;
