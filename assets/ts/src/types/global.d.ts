@@ -207,8 +207,8 @@ declare namespace Whistle {
     getRuntimeInfo(cb: (info: any) => void): void;
     updateRules(): void;
     compose(options: any, cb: (err: any, data?: any) => void): void;
-    getRules(cb: (rules: any) => void): void;
-    getValues(cb: (values: any) => void): void;
+    getRules(cb: (rules: any, outputArray?: boolean) => void): void;
+    getValues(cb: (values: any, outputArray?: boolean) => void): void;
     getPlugins(cb: (plugins: any) => void): void;
     getCustomCertsInfo(cb: (certs: any) => void): void;
     isActive(cb: (active: boolean) => void): void;
