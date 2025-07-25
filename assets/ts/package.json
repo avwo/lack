@@ -1,24 +1,26 @@
 {
   "name": "whistle.lack",
   "version": "1.0.0",
-  "description": "插件功能简介",
+  "description": "",
   "scripts": {
     "dev": "tsc -w"
   },
+  "whistleConfig": {},
   "dependencies": {
     "koa": "^2.15.0",
     "koa-bodyparser": "^4.4.1",
     "koa-onerror": "^4.2.0",
-    "koa-router": "^12.0.1",
+    "@koa/router": "^13.1.1",
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
+    "@types/node": "^24.0.14",
     "typescript": "^4.6.2"
   },
   "tsTypes": {
     "@types/koa": "^2.13.4",
+    "@types/koa__router": "^12.0.4",
     "@types/koa-bodyparser": "^4.3.5",
-    "@types/koa-router": "^7.4.4",
     "@types/koa-static": "^4.0.2"
   }
 }

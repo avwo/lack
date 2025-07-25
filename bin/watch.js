@@ -8,6 +8,7 @@ const HOME_DIR_RE = /^[~～]\//;
 const PLUGIN_NAME_RE = /^(?:@[\w-]+\/)?(whistle\.[a-z\d_-]+)$/;
 const REL_RE = /^\.\.[\\/]+/;
 const SLASH_RE = /[\\/]/;
+const BOUNDARY = '\n************************************************\n';
 
 const getWhistlePath = () => {
   const dir = process.env.WHISTLE_PATH;
@@ -15,6 +16,10 @@ const getWhistlePath = () => {
     return HOME_DIR_RE.test(dir) ? path.join(os.homedir(), `.${dir.substring(1)}`) : dir;
   }
   return path.join(os.homedir(), '.WhistleAppData');
+};
+
+const showLog = (msg) => {
+  console.log(msg); // eslint-disable-line
 };
 
 const DEV_PLUGINS = path.join(getWhistlePath(), 'dev_plugins');
@@ -80,13 +85,13 @@ module.exports = (dirs) => {
     fs.unlinkSync(logFile); // eslint-disable-line
   } catch (e) {}
   fse.ensureDirSync(DEV_PLUGINS);
-  const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', 'resRules.txt',
-    '_values.txt', 'lib', 'dist', 'public', 'initial.js', 'initialize.js'];
+  const watchList = ['index.js', 'rules.txt', '_rules(reqRules).txt', '_values.txt',
+    'resRules.txt', 'lib', 'dist', 'public', 'initial(initialize).js'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
-      dir = dir.trim();
-      if (dir && watchList.indexOf(dir) === -1) {
-        watchList.push(dir);
+      const d = dir.trim();
+      if (d && watchList.indexOf(d) === -1) {
+        watchList.push(d);
       }
     });
   }
@@ -104,15 +109,17 @@ module.exports = (dirs) => {
         return true;
       }
     }
+    return false;
   };
-  console.log(`Watching the following files/folders changes:\n${tips}`); // eslint-disable-line
-  console.log('\n*********************************************\n'); // eslint-disable-line
+  showLog(BOUNDARY);
+  showLog(`Watching the following files/folders changes:\n${tips}`);
+  showLog(BOUNDARY);
   const ignoredRe = /(^|[/\\])(\..|node_modules([/\\]|$))/;
   chokidar.watch(watchList, {
     ignored: ignoredRe,
   }).on('raw', (_, filename, details) => {
-    if (filename.includes('package.json') || filename.includes('.console.log') ||
-      ignoredRe.test(filename)) {
+    if (filename.includes('package.json') || filename.includes('.console.log')
+      || ignoredRe.test(filename)) {
       return;
     }
     const watchedPath = (details && details.watchedPath) || filename;
@@ -122,8 +129,7 @@ module.exports = (dirs) => {
     }
     clearTimeout(timer);
     timer = setTimeout(() => {
-      console.log(''); // eslint-disable-line
-      console.log(`${hasSlash ? watchedPath : filename} is changed.`); // eslint-disable-line
+      showLog(`\n${hasSlash ? watchedPath : filename} is changed.`);
       touch();
     }, 1000);
   }).on('error', () => {});

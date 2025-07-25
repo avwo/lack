@@ -8,11 +8,11 @@ let bingo;
 
 program
   .version(conf.version)
-  .command('init')
+  .command('init [hooks]')
   .description('create whistle plugin project.')
-  .action(() => {
+  .action((hooks) => {
     bingo = true;
-    init();
+    init(hooks);
   });
 
 program

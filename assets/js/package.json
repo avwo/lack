@@ -1,12 +1,13 @@
 {
   "name": "whistle.lack",
   "version": "1.0.0",
-  "description": "插件功能简介",
+  "description": "",
+  "whistleConfig": {},
   "dependencies": {
+    "@koa/router": "^13.1.1",
     "koa": "^2.15.0",
     "koa-bodyparser": "^4.4.1",
     "koa-onerror": "^4.2.0",
-    "koa-router": "^12.0.1",
     "koa-static": "^5.0.0"
   }
 }

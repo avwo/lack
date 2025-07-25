@@ -309,6 +309,8 @@ declare namespace Whistle {
       isRexExp?: boolean;
       pattern?: string;
       customParser?: boolean | '';
+      serverIp: string;
+      statusCode: string;
     };
     originalRes: {
       serverIp: string;
