@@ -200,6 +200,7 @@ declare namespace Whistle {
     sharedStorage: SharedStorage;
     baseUrl: string;
     LRU: LRUCache;
+    zipBody(body: any, stream: WhistleBase.Request | WhistleBase.Response, cb: (result: Buffer | '') => void): void;
     getValue(key: string, cb: (value: string) => void): void;
     getCert(domain: string, cb: (cert: any) => void): void;
     getRootCA(cb: (cert: any) => void): void;
@@ -243,13 +244,13 @@ declare namespace Whistle {
   type PassThrough = (uri?: PassThroughReq, trailers?: PassThroughRes) => void;
 
   interface WriteHead {
-    (code: string | number, msg?: string, headers?: any): void;
-    (code: string | number, headers?: any): void;
+    (code?: string | number, msg?: string, headers?: any): void;
+    (code?: string | number, headers?: any): void;
   }
 
   interface RequestFn {
-    (uri: any, cb?: (res: any) => void, opts?: any): any;
-    (uri: any, opts?: any, cb?: (res: any) => void): any;
+    (uri?: any, cb?: (res: any) => void, opts?: any): any;
+    (uri?: any, opts?: any, cb?: (res: any) => void): any;
   }
 
   class PluginRequest extends WhistleBase.Request {
@@ -340,6 +341,7 @@ declare namespace Whistle {
     setReqRules: SetRules;
     setResRules: SetRules;
     disableTrailers?: boolean;
+    writeHead: WriteHead;
   }
   class PluginUIRequest extends WhistleBase.Request {
     clientIp: string;
