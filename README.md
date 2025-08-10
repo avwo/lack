@@ -5,7 +5,9 @@
 [![NPM count](https://img.shields.io/npm/dt/lack.svg?style=flat-square)](https://www.npmjs.com/package/lack)
 [![License](https://img.shields.io/npm/l/lack.svg?style=flat-square)](https://www.npmjs.com/package/lack)
 
-生成 [whistle](https://github.com/avwo/whistle) 插件的脚手架。
+中文 · [English](./README-en_US.md)
+
+用于快速生成 [Whistle](https://github.com/avwo/whistle) 插件的脚手架工具。
 
 ### 安装
 ``` sh
@@ -13,25 +15,36 @@ npm i -g lack
 ```
 
 ### 使用
-严格按以下步骤操作：
-1. 新建插件目录 `whistle.xxx`（如果已存在忽略此步骤）
-    > xxx 表示只包含 `a-z\d_-` 的任意字符串，具体参见帮助文档：[插件开发](https://wproxy.org/whistle/plugins.html)
-2. 进入插件目录，执行 `lack init` 后根据需要选择插件的钩子
-    > 有关插件钩子的功能参见帮助文档：[插件开发](https://wproxy.org/whistle/plugins.html)
-3. 选择好插件所需钩子并确定后，如果需要修改或新增钩子，可以删除已存在的钩子，并执行上面步骤2
-4. 【可选】配置eslint规则，参考：[eslint-config-imweb](https://github.com/imweb/eslint-config-imweb)
-5. 安装依赖 `npm i`
-6. 执行 `npm link` 将插件link到全局，这样可以在 whistle 界面的 Plugins 列表看到此插件
-7. 开启 whistle 调试模式
+1. 创建插件目录
     ``` sh
-    w2 stop
-    w2 run
+    mkdir whistle.your-plugin-name
+    cd whistle.your-plugin-name
     ```
-    > 这样可以在控制台里面看到插件 `console.log` 输出的内容
-8. 开启监听插件变更自动重启：
-    ```sh
+    > 注意：插件名必须符合 `whistle.xxx` 或 `@scope/whistle.xxx` 格式，其中 `xxx` 只能包含 `a-z`、`0-9`、`-` 和 `_`（下划线不推荐使用）
+2. 初始化项目
+   - 手动选择：`lack init`
+      > 该命令会交互式询问你需要哪些插件钩子（支持多选），按需选择即可
+   - 快捷命令（`lack init hook1,hook2...`）：[插件开发](https://wproxy.org/docs/extensions/dev.html)
+3. 安装依赖
+      ``` sh
+      npm i
+      ```
+4. 【可选】代码规范配置
+    ``` sh
+    npx install-peerdeps --dev eslint-config-airbnb
+    ```
+    > 详细配置参考：https://www.npmjs.com/package/eslint-config-airbnb
+5. 开发模式
+    ``` sh
     lack watch
     ```
-9. 更多帮助执行 `lack --help`
+    该命令的功能：
+    - 自动重新加载插件到运行的 Whistle 实例
+    - 插件代码变更时会自动重新加载
+    - 可以在命令行查看插件 `console.xxx` 输出的日志
+6. 查看帮助
+    ``` sh
+    lack --help
+    ```
 
-更多信息参考插件示例：[https://github.com/whistle-plugins/examples](https://github.com/whistle-plugins/examples)
+完整插件开发流程参考文档：[插件开发](https://wproxy.org/docs/extensions/dev.html)
