@@ -8,7 +8,6 @@ const HOME_DIR_RE = /^[~～]\//;
 const PLUGIN_NAME_RE = /^(?:@[\w-]+\/)?(whistle\.[a-z\d_-]+)$/;
 const REL_RE = /^\.\.[\\/]+/;
 const SLASH_RE = /[\\/]/;
-const BOUNDARY = '\n************************************************\n';
 
 const getWhistlePath = () => {
   const dir = process.env.WHISTLE_PATH;
@@ -80,13 +79,21 @@ const readLog = () => {
   reader.on('error', onEnd);
 };
 
+function logFileChange(filePath) {
+  const time = new Date().toLocaleTimeString();
+
+  showLog(`[${time}] Change detected`);
+  showLog(`  File: ${filePath}`);
+  showLog('  ---');
+}
+
 module.exports = (dirs) => {
   try {
     fs.unlinkSync(logFile); // eslint-disable-line
   } catch (e) {}
   fse.ensureDirSync(DEV_PLUGINS);
-  const watchList = ['index.js', 'rules.txt', '_rules(reqRules).txt', '_values.txt',
-    'resRules.txt', 'lib', 'dist', 'public', 'initial(initialize).js'];
+  const watchList = ['index.js', 'rules.txt', '_rules.txt / reqRules.txt', '_values.txt',
+    'resRules.txt', 'lib', 'dist', 'public', 'initial.js / initialize.js'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
       const d = dir.trim();
@@ -100,7 +107,7 @@ module.exports = (dirs) => {
   const cwd = process.cwd();
   const tips = watchList.map((name, i) => {
     paths.push(path.resolve(cwd, name));
-    return `${i + 1}. ${name}`;
+    return `  ${i + 1}. ${name}`;
   }).join('\n');
   const len = paths.length;
   const inWatchList = (filename) => {
@@ -111,9 +118,14 @@ module.exports = (dirs) => {
     }
     return false;
   };
-  showLog(BOUNDARY);
-  showLog(`Watching the following files/folders changes:\n${tips}`);
-  showLog(BOUNDARY);
+  // Watching list output
+  showLog('\n═══════════════════════════════════════════════════');
+  showLog('              📁 Watching List');
+  showLog('═══════════════════════════════════════════════════\n');
+  showLog(tips);
+  showLog('\n───────────────────────────────────────────────────');
+  showLog(`              Total: ${watchList.length} items`);
+  showLog('═══════════════════════════════════════════════════\n');
   const ignoredRe = /(^|[/\\])(\..|node_modules([/\\]|$))/;
   chokidar.watch(watchList, {
     ignored: ignoredRe,
@@ -129,7 +141,7 @@ module.exports = (dirs) => {
     }
     clearTimeout(timer);
     timer = setTimeout(() => {
-      showLog(`\n${hasSlash ? watchedPath : filename} is changed.`);
+      logFileChange(hasSlash ? watchedPath : filename);
       touch();
     }, 1000);
   }).on('error', () => {});

@@ -136,6 +136,13 @@ declare namespace Whistle {
     removeItem: (key: string) => any;
   }
 
+  interface StreamUtils {
+    readRawBuffer(stream: WhistleBase.ReadableStream, cb: (buffer: Buffer | null) => void): void;
+    readBuffer(stream: WhistleBase.ReadableStream, cb: (buffer: Buffer | null) => void): void;
+    readText(stream: WhistleBase.ReadableStream, cb: (text: string) => void): void;
+    readJson(stream: WhistleBase.ReadableStream, cb: (buffer: Buffer | null) => void): void;
+  }
+
   interface PluginOptions {
     name: string;
     version: string;
@@ -219,6 +226,7 @@ declare namespace Whistle {
     generateSaz(sessions: Session[]): Buffer;
     extractSaz(saz: Buffer, cb: (sessions: Session[]) => void): void;
     getTempFilePath(ruleValue: string): string | undefined;
+    streamUtils: StreamUtils;
     [propName: string]: any;
   }
 
@@ -255,6 +263,7 @@ declare namespace Whistle {
 
   class PluginRequest extends WhistleBase.Request {
     clientIp: string;
+    clientPort: number;
     fullUrl: string;
     isHttps: boolean;
     fromTunnel: boolean;
@@ -274,6 +283,10 @@ declare namespace Whistle {
     originalReq: {
       id: string;
       clientIp: string;
+      clientPort: number;
+      remoteAddress: string;
+      remotePort: number;
+      clientId: string;
       isH2: boolean;
       existsCustomCert: boolean;
       isUIRequest: boolean;
@@ -285,12 +298,13 @@ declare namespace Whistle {
       sniValue: string;
       hostValue: string;
       fullUrl: string;
+      originHost: string;
       url: string;
       isHttps: boolean;
-      remoteAddress: string;
-      remotePort: number;
+      isHttp2: boolean;
       fromTunnel: boolean;
       fromComposer: boolean;
+      ruleProtocol: string;
       servername: string;
       certCacheName: string;
       certCacheTime: number;
@@ -300,7 +314,6 @@ declare namespace Whistle {
       relativeUrl: string;
       extraUrl: string;
       method: string;
-      clientPort: string;
       globalValue: string;
       proxyValue: string;
       pacValue: string;
@@ -312,6 +325,7 @@ declare namespace Whistle {
       customParser?: boolean | '';
       serverIp: string;
       statusCode: string;
+      notDecompressed: boolean;
     };
     originalRes: {
       serverIp: string;
@@ -345,6 +359,7 @@ declare namespace Whistle {
   }
   class PluginUIRequest extends WhistleBase.Request {
     clientIp: string;
+    clientPort: number;
     Storage: Storage;
     localStorage: Storage;
     sharedStorage: SharedStorage;
