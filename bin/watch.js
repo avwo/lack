@@ -92,8 +92,8 @@ module.exports = (dirs) => {
     fs.unlinkSync(logFile); // eslint-disable-line
   } catch (e) {}
   fse.ensureDirSync(DEV_PLUGINS);
-  const watchList = ['index.js', 'rules.txt', '_rules.txt / reqRules.txt', '_values.txt',
-    'resRules.txt', 'lib', 'dist', 'public', 'initial.js / initialize.js'];
+  const watchList = ['index.js', 'rules.txt', '_rules.txt', 'reqRules.txt', '_values.txt',
+    'resRules.txt', 'lib', 'dist', 'public', 'initial.js', 'initialize.js'];
   if (dirs && typeof dirs === 'string') {
     dirs.split(',').forEach((dir) => {
       const d = dir.trim();
